@@ -1,27 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel='stylesheet' href='public/stylesheets/style.css' />
-  </head>
-  <body>
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/"><%= title %></a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Sign Up</a></li>
-              <li><a href="/logout">Logout</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+<% include ./partials/header %>
 
-  </body>
-</html>
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
+
+<% include ./partials/footer %>
