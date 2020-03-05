@@ -1,0 +1,26 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead"><%= lecture.name%></p>
+            <div class="list-group">
+                <% for(let i = 0; i < lecture.background.length; i++){ %>
+<!-- @TODO: make slide number dynamic -->
+<!-- @TODO: Add class "active" only to the selected slide -->
+                    <li class="list-group-item active">slide number 1</li>
+                <% } %>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail">
+<!-- @TODO: use a variable to show the selected slide -->
+                <img class="img-responsive" alt="<%= lecture.name%>" src="<%= lecture.background[0] %>">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% include ../partials/footer %>
