@@ -21,9 +21,10 @@ router.post('/', function (request,response) {
             request.redirect("/login");
         } else {
             var name = request.body.name,
-                background = request.body.background,
+                background_url = request.body.background_url,
+                background_file = request.body.background_file,
                 author = request.user._id,
-                newLecture = {name: name, author:author, background:background};
+                newLecture = {name: name, author:author,background_file:background_file, background:background_url};
             Lecture.create(newLecture, function (error, item) {
                 if(error){
                     request.flash('error', "Could not create the lecture");
