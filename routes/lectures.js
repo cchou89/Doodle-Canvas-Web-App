@@ -31,7 +31,11 @@ router.post('/new', function (request,response) {
         } else {
             var name = request.body.name;
             // var background_url = request.body.background_url;
-            var background_file = new Buffer(request.files.background_file.data).toString('base64');
+
+            var data = request.files.background_file.data;
+            /*@TODO: Buffer constructor is depricated and undafe,
+            *   change the code to use Buffer.alloc(size, string, encoding) */
+            var background_file = new Buffer( data ).toString('base64');
             // var background_pdf = new mongodb.Binary(request.files.background_pdf.data);
             var author = request.user._id;
             var newLecture = {name: name, author:author ,
