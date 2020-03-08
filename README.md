@@ -2,6 +2,14 @@
 
 Skynet is a web-based messaging application. Its main feature is live drawing broadcasted to multiple users.
 
+# Usage 
+To start a lecture, you need to:
+1.  sign up or log in
+2.  create a lecture, give it a name and upload an image (i.e. .jpg, .jpeg, etc.)
+3.  select the lecture from the lectures page
+4.  start doodling ...
+
+
 # WebStorm Configuration
 1. Go to: 
     Menu bar > Run > Edit Configurations... 
