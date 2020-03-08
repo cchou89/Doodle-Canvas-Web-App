@@ -70,6 +70,26 @@ router.get("/:id", function (request, response) {
 });
 /* @TODO*/
 /* EDIT: GET the edit page */
+router.get("/:id/edit", function(request, response){
+    if(!request.isAuthenticated()){
+        request.flash('error', "First log in");
+        response.redirect("/login");
+    } else {
+
+        Lecture.findById(request.params.id).exec(function (error, foundLecture){
+            if(error){
+                console.log(error);
+                request.flash('error', 'could not find the lecture');
+                response.redirect('/lectures');
+            } else if (foundLecture.author.equals(request.user._id)) {
+                response.render('lectures/edit', {lecture : foundLecture});
+            } else {
+                request.flash("error", "You don't own the lecture");
+                response.redirect("back");
+            }
+        })
+    }
+});
 /* UPDATE: POST the edit page */
 /* DESTROY: DELETE a lecture*/
 // router.delete("/:id", function (request, response) {

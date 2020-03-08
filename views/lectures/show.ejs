@@ -5,7 +5,13 @@
         <div class="col-md-2">
             <p class="lead"><%= lecture.name%></p>
             <div class="list-group">
-                    <p class="list-group-item active">slide number 1</p>
+                <li class="list-group-item active">slide number 1</li>
+                <% if(loggedinUser && lecture.author.equals(loggedinUser._id)){ %>
+                    <a class="btn btn-xs btn-warning" href="/lectures/<%= lecture._id %>/edit">Edit</a>
+                    <form id="delete-form" action="/lectures/<%= lecture._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-xs btn-danger">Delete</button>
+                    </form>
+                <% }%>
             </div>
         </div>
         <div class="col-md-10">

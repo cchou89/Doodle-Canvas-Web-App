@@ -44,7 +44,7 @@ router.post("/login", passport.authenticate("local",
 router.get("/logout", function(request, response){
   request.logout();
   request.flash('message', 'Logged out');
-  response.redirect("/users");
+  response.redirect("/");
 });
 
 module.exports = router;
