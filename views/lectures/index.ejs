@@ -13,7 +13,7 @@
         <% lectures.forEach(function(lecture){ %>
             <div class="col-md-3 col-sm-6">
                 <div class="thumbnail">
-                    <img src="<%= lecture.background %>">
+                    <img src="data:image;base64,<%= lecture.background_file %>" alt="<%= lecture.name %>">
                     <div class="caption">
                         <h4><%= lecture.name %></h4>
                     </div>

@@ -9,6 +9,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var User = require('./models/user');
 var mongoose = require('mongoose');
+var fileUpload = require('express-fileupload');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
+app.use(fileUpload());
 
 /* PASSPORT CONFIGURATION */
 app.use(require("express-session")({

@@ -1,6 +1,6 @@
 var express = require('express');
-var router = express.Router();
 var Lecture = require('../models/lecture');
+var router = express.Router();
 
 /* INDEX:  GET lecturs listing. */
 router.get('/', function(request, response) {
@@ -14,29 +14,6 @@ router.get('/', function(request, response) {
         }
     })
 });
-/* CREATE: POST lecture form that creates a new lecture */
-router.post('/', function (request,response) {
-        if(!request.isAuthenticated()){
-            request.flash('error', "First log in");
-            request.redirect("/login");
-        } else {
-            var name = request.body.name,
-                background_url = request.body.background_url,
-                background_file = request.body.background_file,
-                author = request.user._id,
-                newLecture = {name: name, author:author,background_file:background_file, background:background_url};
-            Lecture.create(newLecture, function (error, item) {
-                if(error){
-                    request.flash('error', "Could not create the lecture");
-                    response.redirect("/new");
-                } else {
-                    //redirect back to index
-                    console.log(item);
-                    response.redirect("/lectures");                }
-            })
-        }
-});
-
 /* NEW: GET lecture form */
 router.get("/new", function(request, response){
     if(!request.isAuthenticated()){
@@ -45,6 +22,34 @@ router.get("/new", function(request, response){
     } else {
         response.render("lectures/new");
     }
+});
+/* CREATE: POST lecture form that creates a new lecture */
+router.post('/new', function (request,response) {
+        if(!request.isAuthenticated()){
+            request.flash('error', "First log in");
+            response.redirect("/login");
+        } else {
+            var name = request.body.name;
+            // var background_url = request.body.background_url;
+            var background_file = new Buffer(request.files.background_file.data).toString('base64');
+            // var background_pdf = new mongodb.Binary(request.files.background_pdf.data);
+            var author = request.user._id;
+            var newLecture = {name: name, author:author ,
+                // background_url:background_url,
+                background_file:background_file,
+                // background_pdf:background_pdf
+            };
+            Lecture.create(newLecture, function (error, item) {
+                if(error){
+                    request.flash('error', "Could not create the lecture");
+                    response.redirect("/lectures/new");
+                } else {
+                    //redirect back to index
+                    console.log(item);
+                    response.redirect("/lectures");
+                }
+            });
+        }
 });
 
 /* SHOW: GET a lecture */
@@ -66,5 +71,6 @@ router.get("/:id", function (request, response) {
 // router.delete("/:id", function (request, response) {
 //     response.redirect('/lectures')
 // });
+
 
 module.exports = router;

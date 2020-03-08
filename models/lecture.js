@@ -6,7 +6,9 @@ var LectureSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
         },
-    background : [String],
+    background_url : String,
+    background_file: Buffer,
+    background_pdf: Buffer,
     message_log : [{
         author: {
             type: mongoose.Schema.Types.ObjectId,
