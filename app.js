@@ -10,6 +10,7 @@ var LocalStrategy = require('passport-local');
 var User = require('./models/user');
 var mongoose = require('mongoose');
 var fileUpload = require('express-fileupload');
+var methodOverride = require('method-override');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -32,6 +33,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 app.use(fileUpload());
+app.use(methodOverride("_method"));
 
 /* PASSPORT CONFIGURATION */
 app.use(require("express-session")({
@@ -59,6 +61,7 @@ app.use('/lectures', lectureRouter);
 
 // catch 404 and forward to error handler
 app.use(function(request, response, next) {
+  console.log(request.body);
   next(createError(404));
 });
 
