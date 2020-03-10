@@ -68,17 +68,20 @@ function startCanvas () {
     }
 
     canvas.id = 'tempCanvas';
-    canvas.width  = canvasContainer.width;
-    canvas.height = canvasContainer.height;
+    canvas.width  = canvasContainer.offsetWidth;
+    console.log("container offsetWidth: " + canvasContainer.offsetWidth );
+    console.log("container canvas.width: " + canvas.width );
+    canvas.height = canvasContainer.offsetHeight;
     container.appendChild(canvas);
     context = canvas.getContext('2d');
     context.strokeStyle = "black";// Default line color.
     context.lineWidth = 1.0;// Default stroke weight.
-    context.globalAlpha=0.7;
+
 
     // Fill transparent canvas with dark grey (So we can use the color to erase).
-    // context.fillStyle = "#424242";
-    // context.fillRect(0,0,897,532);//Top, Left, Width, Height of canvas.
+    context.fillStyle = "#424242";
+    context.globalAlpha=0.5;
+    context.fillRect(0,0,897,532);//Top, Left, Width, Height of canvas.
 
     //<------Selector Setup------>//
 
@@ -104,8 +107,6 @@ function startCanvas () {
     canvas.addEventListener('serverInput', ev_canvas, false);
 
 }
-
-
 // Get the mouse position.
 function ev_canvas (ev) {
     if (ev.layerX || ev.layerX == 0) { // Firefox
