@@ -7,9 +7,14 @@ var tool;
 var tool_default = 'chalk';
 var tools = {};
 
+// start doodle button, adds the doodle script
+var startDoodle;
+
 // Server sent inputs
 var inStart = {x:112, y:340};
 var inEnd = {x:652, y:370};
+
+
 
 /*<------Tools------>*/
 // Chalk tool.
@@ -39,11 +44,31 @@ tools.chalk = function () {
 };
 
 window.addEventListener('load', startCanvas);
+window.addEventListener('load', listenToButton);
+
+
+/* Add the event listener only after the start-doodle button in clicked
+* Start-doodle is only shown to the owner of a lecture */
+function listenToButton() {
+    /* start doodle button */
+    startDoodle = document.getElementById('start-doodle');
+    console.log(startDoodle);
+    startDoodle.addEventListener('click', doodle);
+}
+function doodle() {
+        // Event Listeners.
+        //local client events
+        canvas.addEventListener('mousedown', ev_canvas, false);
+        canvas.addEventListener('mousemove', ev_canvas, false);
+        canvas.addEventListener('mouseup',   ev_canvas, false);
+        //server events
+        canvas.addEventListener('serverInput', ev_canvas, false);
+}
 
 function startCanvas () {
 
     //<------Debug------>//
-    console.log(tools);
+    // console.log(tools);
     test_btn = document.getElementById('test');
     document.addEventListener("click", printMousePos);
     test_btn.addEventListener("click", testInput);
@@ -114,13 +139,7 @@ function startCanvas () {
         tool = new tools[tool_default];
         tool_select.value = tool_default;
     }
-    // Event Listeners.
-    //local client events
-    canvas.addEventListener('mousedown', ev_canvas, false);
-    canvas.addEventListener('mousemove', ev_canvas, false);
-    canvas.addEventListener('mouseup',   ev_canvas, false);
-    //server events
-    canvas.addEventListener('serverInput', ev_canvas, false);
+
 
 
 
@@ -142,7 +161,7 @@ function ev_canvas (ev) {
     }
 }
 
-function ev_tool_change (ev) {
+function ev_tool_change () {
     if (tools[this.value]) {
         tool = new tools[this.value]();
     }

@@ -48,6 +48,7 @@ router.get("/:id", function (request, response) {
             request.flash('error', 'could not find the lecture');
             response.redirect('/lectures');
         } else {
+
             response.render('lectures/show', {lecture : foundLecture});
         }
     })
@@ -75,7 +76,7 @@ router.put('/:id', authenticate.lectureOwnership, function (request, response) {
 });
 /* DESTROY: DELETE a lecture*/
 router.delete("/:id", authenticate.lectureOwnership, function (request, response) {
-    Lecture.findById(request.params.id,function (error, foundLecture) {
+    Lecture.findById(request.params.id,function () {
         Lecture.findByIdAndDelete(request.params.id,function (error) {
             if (error) {
                 request.flash('error', 'could not delete the lecture');
