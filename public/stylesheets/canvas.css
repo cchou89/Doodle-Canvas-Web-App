@@ -1,14 +1,21 @@
 @charset "UTF-8";
 /* CSS Document */
 
-* { margin:0; padding:0; }
+* {
+    margin:0;
+    padding:0;
+    overflow: scroll;
+    height: auto;
+}
 
 /*body {*/
-/*    background-color: black;*/
-/*    color:#d7d7d7;*/
-/*    font-family:"Belle","Comic Sans MS", cursive;*/
-/*    font-size:25px;*/
-/*    line-height:27px;*/
+/*    !*background-color: black;*!*/
+/*    !*color:#d7d7d7;*!*/
+/*    !*font-family:"Belle","Comic Sans MS", cursive;*!*/
+/*    !*font-size:25px;*!*/
+/*    !*line-height:27px;*!*/
+/*    overflow: scroll;*/
+
 /*}*/
 
 /*#wrapper {*/
@@ -27,26 +34,28 @@
     /*overflow: auto;*/
     /*background-size: contain;*/
     /*padding:14px 0 75px 14px;*/
+    height: auto;
     cursor:crosshair;
 }
-
+#background_file{
+    display: none;
+}
 #drawingCanvas {
     position:fixed;
-    border:1px solid black;
-    overflow: hidden;
-    background-color:transparent;
-    /*background-size: contain;*/
-    background-repeat: no-repeat;
-    width: inherit;
-    /*height: inherit;*/
-    /*min-width: 600px;*/
+    border:1px solid red;
+    overflow: scroll;
+    /*width: 100%;*/
+    height:auto;
+    /*min-width: 1000px;*/
+    /*min-height: 1000px;*/
 }
 
 #tempCanvas {
     position: fixed;
-    width: inherit;
-    height: inherit;
-    overflow:hidden;
+    /*width: inherit;*/
+    height: auto;
+    /*min-width: 600px;*/
+    /*overflow:hidden;*/
 }
 
 .noscript {

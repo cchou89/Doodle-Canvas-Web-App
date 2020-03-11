@@ -1,6 +1,7 @@
 // Check for the canvas tag onload.
 var context;
 var canvas, canvasContainer, contexto;
+var background_file, imageContainer, maxWidth, minHeight;
 // Default tool. (chalk, line, rectangle)
 var tool;
 var tool_default = 'chalk';
@@ -59,6 +60,20 @@ function startCanvas () {
         alert('Error! Failed to getContext!');
         return;
     }
+
+    /* adding background image */
+    background_file = document.getElementById("background_file");
+    imageContainer = document.querySelector('#drawingColumn');
+    maxWidth = background_file.width;
+    minHeight = background_file.height;
+    if (imageContainer.clientWidth < background_file.width){
+        maxWidth = imageContainer.clientWidth;
+        minHeight = minHeight * maxWidth / background_file.width;
+    }
+    imageContainer.clientHeight = minHeight;
+    contexto.canvas.width = maxWidth;
+    contexto.canvas.height = minHeight;
+
     // Build the temporary canvas.
     var container = canvasContainer.parentNode;
     canvas = document.createElement('canvas');
@@ -68,20 +83,21 @@ function startCanvas () {
     }
 
     canvas.id = 'tempCanvas';
-    canvas.width  = canvasContainer.offsetWidth;
-    console.log("container offsetWidth: " + canvasContainer.offsetWidth );
-    console.log("container canvas.width: " + canvas.width );
-    canvas.height = canvasContainer.offsetHeight;
+    canvas.width  = maxWidth;
+    canvas.height = minHeight;
     container.appendChild(canvas);
     context = canvas.getContext('2d');
     context.strokeStyle = "black";// Default line color.
     context.lineWidth = 1.0;// Default stroke weight.
 
+    /* Draw the image into the canvas */
+    contexto.drawImage(background_file, 0, 0, maxWidth, minHeight);
 
     // Fill transparent canvas with dark grey (So we can use the color to erase).
+    /* Damoon: I added globalAlpha for debugging*/
     context.fillStyle = "#424242";
-    context.globalAlpha=0.5;
-    context.fillRect(0,0,897,532);//Top, Left, Width, Height of canvas.
+    context.globalAlpha=0.2;
+    context.fillRect(0,0,maxWidth, minHeight);//Top, Left, Width, Height of canvas.
 
     //<------Selector Setup------>//
 
@@ -106,14 +122,16 @@ function startCanvas () {
     //server events
     canvas.addEventListener('serverInput', ev_canvas, false);
 
+
+
 }
 // Get the mouse position.
 function ev_canvas (ev) {
-    if (ev.layerX || ev.layerX == 0) { // Firefox
+    if (ev.layerX || ev.layerX === 0) { // Firefox
         ev._x = ev.layerX;
         ev._y = ev.layerY;
     }
-    else if (ev.offsetX || ev.offsetX == 0) { // Opera
+    else if (ev.offsetX || ev.offsetX === 0) { // Opera
         ev._x = ev.offsetX;
         ev._y = ev.offsetY;
     }
@@ -132,8 +150,8 @@ function ev_tool_change (ev) {
 
 // Create the temporary canvas on top of the canvas, which is cleared each time the user draws.
 function img_update () {
-    contexto.drawImage(canvas, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    contexto.drawImage(canvas, 0, 0, maxWidth, minHeight);
+    context.clearRect(0, 0 ,maxWidth, minHeight);
 }
 
 // Debug
