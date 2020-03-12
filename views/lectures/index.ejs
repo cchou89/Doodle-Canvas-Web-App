@@ -9,11 +9,12 @@
             </p>
         </div>
     </header>
-    <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+    <div class="row text-center" style="display:flex; flex-wrap: wrap; ">
         <% lectures.forEach(function(lecture){ %>
             <div class="col-md-3 col-sm-6">
                 <div class="thumbnail">
-                    <img src="data:image;base64,<%= lecture.background_file %>" alt="<%= lecture.name %>">
+                    <img src="data:image;base64,<%= lecture.background_file %>" alt="<%= lecture.name %> "
+                         style="max-height: 150px;">
                     <div class="caption">
                         <h4><%= lecture.name %></h4>
                     </div>
