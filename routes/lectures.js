@@ -20,7 +20,7 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
         response.render("lectures/new");
 });
 /* CREATE: POST lecture form that creates a new lecture */
-router.post('/new', authenticate.lectureOwnership, function (request,response) {
+router.post('/new', authenticate.isLoggedIn, function (request,response) {
         var data = request.files.background_file.data;
         /*@TODO: Buffer constructor is deprecated and unsafe,
         *   change the code to use Buffer.alloc(size, string, encoding) */
