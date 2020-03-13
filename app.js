@@ -18,7 +18,9 @@ var lectureRouter = require('./routes/lectures');
 
 var app = express();
 
-var url = process.env.DATABASEURL || "mongodb://localhost/skynetLocalDB";
+// var url = process.env.DATABASEURL || "mongodb://localhost/skynetLocalDB";
+var url = process.env.DATABASEURL || "mongodb+srv://damoon:Summer2020@skynet-ac44p.azure.mongodb.net/test?retryWrites=true&w=majority";
+
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
 
 // view engine setup
