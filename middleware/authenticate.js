@@ -31,25 +31,4 @@ authenticate.lectureOwnership = function(request, response, next) {
     }
 };
 
-
-// authenticate.checkCommentOwnership = function(request, response, next) {
-//     if(request.isAuthenticated()){
-//         Group.findById(request.params.group_id, function(err, foundComment){
-//             if(err){
-//                 response.redirect("back");
-//             }  else {
-//                 // does user own the group?
-//                 if(foundComment.author.id.equals(request.user._id)) {
-//                     next();
-//                 } else {
-//                     request.flash("error", "You don't have permission to do that");
-//                     response.redirect("back");
-//                 }
-//             }
-//         });
-//     } else {
-//         request.flash("error", "You need to be logged in to do that");
-//         response.redirect("back");
-//     }
-// };
 module.exports = authenticate;
