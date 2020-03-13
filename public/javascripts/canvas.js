@@ -140,9 +140,6 @@ function startCanvas () {
         tool_select.value = tool_default;
     }
 
-
-
-
 }
 // Get the mouse position.
 function ev_canvas (ev) {
