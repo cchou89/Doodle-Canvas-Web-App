@@ -15,6 +15,7 @@ var methodOverride = require('method-override');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var lectureRouter = require('./routes/lectures');
+var groupsRouter = require('./routes/groups');
 
 var app = express();
 
@@ -59,7 +60,9 @@ app.use(function(request, response, next){
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/groups', groupsRouter);
 app.use('/lectures', lectureRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(request, response, next) {
@@ -68,7 +71,7 @@ app.use(function(request, response, next) {
 });
 
 // error handler
-app.use(function(err, request, response) {
+app.use(function(err, request, response, next) {
   // set locals, only providing error in development
   response.locals.message = err.message;
   response.locals.error = request.app.get('env') === 'development' ? err : {};

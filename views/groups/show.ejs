@@ -1,0 +1,24 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <p class="lead"><%= group.name%></p>
+            <div class="list-group">
+                <li class="list-group-item active">Memberlist Placeholder</li>
+                <% if(loggedinUser && group.owner.equals(loggedinUser._id)){ %>
+                    <a class="btn btn-xs btn-warning" href="/groups/<%= group._id %>/edit">Edit</a>
+                    <form id="delete-form" action="/groups/<%= group._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-xs btn-danger">Delete</button>
+                    </form>
+                <% }%>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="thumbnail">
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

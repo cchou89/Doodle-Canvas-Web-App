@@ -19,6 +19,7 @@ router.get('/', function(request, response) {
 router.get("/new", authenticate.isLoggedIn, function(request, response){
         response.render("lectures/new");
 });
+
 /* CREATE: POST lecture form that creates a new lecture */
 router.post('/new', authenticate.isLoggedIn, function (request,response) {
         var data = request.files.background_file.data;
