@@ -16,9 +16,8 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/lectures">Lectures</a></li>
-                <li><a href="/groups">Create Group</a> </li>
-            <% if(loggedinUser){ %>
-                <li><a href="#">Hello <%= loggedinUser.username%></a></li>
+                <% if(loggedinUser){ %>
+                <li><a href="/users/<%= loggedinUser._id%>">Hello <%= loggedinUser.username%></a></li>
                 <li><a href="/logout">Logout</a></li>
                 <%} else {%>
                 <li><a href="/login">Login</a></li>

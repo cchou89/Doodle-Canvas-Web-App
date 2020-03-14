@@ -8,12 +8,12 @@ router.get('/', function(request, response) {
     // find the list of all lectures
     Lecture.find({}, function (error, list) {
         if (error){
-            request.flash('error', "Could not find the Lecture");
-            response.redirect('/lectures');
+            request.flash('error', "Error searching for lectures");
+            response.redirect('/');
         } else {
             response.render('lectures/index', {lectures: list});
         }
-    })
+    });
 });
 /* NEW: GET lecture form */
 router.get("/new", authenticate.isLoggedIn, function(request, response){
@@ -49,7 +49,6 @@ router.get("/:id", function (request, response) {
             request.flash('error', 'could not find the lecture');
             response.redirect('/lectures');
         } else {
-
             response.render('lectures/show', {lecture : foundLecture});
         }
     })

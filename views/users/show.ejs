@@ -1,0 +1,33 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <p class="lead"><%= user.username%></p>
+            <div class="list-group">
+                <li class="list-group-item active"><%= user.username%></li>
+            </div>
+        </div>
+
+        <div class="col-md-8" id="drawingColumn">
+            <div class="row text-center" style="display:flex; flex-wrap: wrap; ">
+                <% lectures.forEach(function(lecture){ %>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="thumbnail">
+                            <img src="data:image;base64,<%= lecture.background_file %>" alt="<%= lecture.name %> "
+                                 style="max-height: 150px;">
+                            <div class="caption">
+                                <h4><%= lecture.name %></h4>
+                            </div>
+                            <p>
+                                <a href="/lectures/<%= lecture._id %>" class="btn btn-primary">Attend <%= lecture.name%> lecture</a>
+                            </p>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>
