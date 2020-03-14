@@ -47,7 +47,3 @@ router.get("/logout", function(request, response){
 });
 
 module.exports = router;
-
-
-
-

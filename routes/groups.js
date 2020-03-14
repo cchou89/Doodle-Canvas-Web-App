@@ -41,8 +41,6 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
         })
 });
 
-
-
 /* SHOW: GET a group */
 router.get("/:id", function (request, response) {
     Group.findById(request.params.id).exec(function (error, foundGroup){
@@ -56,39 +54,5 @@ router.get("/:id", function (request, response) {
     })
 });
 
-/* @TODO*/
-// /* EDIT: GET the edit page */
-// router.get("/:id/edit", authenticate.isLoggedIn(), function(request, response){
-//     Lecture.findById(request.params.id, function (error, foundLecture) {
-//         response.render('lectures/edit', {lecture : foundLecture});
-//     });
-// });
-/* UPDATE: PUT the edit page */
-// router.put('/:id', authenticate.isLoggedIn(), function (request, response) {
-//     Lecture.findById(request.params.id, function (error, foundLecture) {
-//         /* this update is not safe but works for now
-//         *  @TODO can be improved by using findByIdAndUpdate, or Buffer.alloc() */
-//         foundLecture.name = request.body.name;
-//         if(request.files){
-//             console.log("bgFile is true");
-//             foundLecture.background_file = new Buffer( request.files.background_file.data ).toString('base64');
-//         }
-//         foundLecture.save();
-//         response.redirect("/groups/" + request.params.id);
-//     });
-// });
-/* DESTROY: DELETE a lecture*/
-// router.delete("/:id", authenticate.lectureOwnership, function (request, response) {
-//     Lecture.findById(request.params.id,function () {
-//         Lecture.findByIdAndDelete(request.params.id,function (error) {
-//             if (error) {
-//                 request.flash('error', 'could not delete the lecture');
-//                 response.redirect("/lectures");
-//             } else {
-//                 response.redirect("/lectures");
-//             }
-//         });
-//     });
-// });
 
 module.exports = router;
