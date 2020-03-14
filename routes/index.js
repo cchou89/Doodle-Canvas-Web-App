@@ -4,7 +4,7 @@ var passport = require('passport');
 var User = require("../models/user");
 
 /* GET home page. */
-router.get('/', function(request, response, next) {
+router.get('/', function(request, response) {
   response.render('home');
 });
 
