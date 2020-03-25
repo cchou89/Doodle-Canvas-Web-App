@@ -10,12 +10,6 @@ var tools = {};
 // start doodle button, adds the doodle script
 var startDoodle;
 
-// Server sent inputs
-var inStart = {x:112, y:340};
-var inEnd = {x:652, y:370};
-
-
-
 /*<------Tools------>*/
 // Chalk tool.
 tools.chalk = function () {
@@ -32,6 +26,7 @@ tools.chalk = function () {
         if (tool.started) {
             context.lineTo(ev._x, ev._y);
             context.stroke();
+            printMousePos(ev);
         }
     };
     this.mouseup = function (ev) {
@@ -39,6 +34,11 @@ tools.chalk = function () {
             tool.mousemove(ev);
             tool.started = false;
             img_update();
+        }
+    };
+    this.mouseleave = function (ev) {
+        if (tool.started) {
+            tool.mouseup(ev);
         }
     };
 };
@@ -61,17 +61,10 @@ function doodle() {
         canvas.addEventListener('mousedown', ev_canvas, false);
         canvas.addEventListener('mousemove', ev_canvas, false);
         canvas.addEventListener('mouseup',   ev_canvas, false);
-        //server events
-        canvas.addEventListener('serverInput', ev_canvas, false);
+        canvas.addEventListener('mouseleave', ev_canvas, false);
 }
 
 function startCanvas () {
-
-    //<------Debug------>//
-    // console.log(tools);
-    test_btn = document.getElementById('test');
-    document.addEventListener("click", printMousePos);
-    test_btn.addEventListener("click", testInput);
 
     //<------Canvas Setup------>//
     canvasContainer = document.getElementById('drawingCanvas');
@@ -175,16 +168,3 @@ function printMousePos(event) {
     console.log("clientX: " + event.clientX);
     console.log("clientY: " + event.clientY);
 }
-
-function testInput() {
-    //test btn event. use to simulate server input
-    var clickEvent = document.createEvent('serverInput');
-    clickEvent.initEvent ('testClick', true, true);
-}
-
-/*
-function triggerMouseEvent (node, eventType) {
-
-    node.dispatchEvent (clickEvent);
-}
-*/

@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 #blackboardPlaceholder {
-    position: fixed;
     height: auto;
     cursor:crosshair;
 }
@@ -9,13 +8,14 @@
     display: none;
 }
 #drawingCanvas {
-    position:fixed;
+    position: absolute;
     border:1px solid red;
     overflow: scroll;
     height:auto;
 }
 #tempCanvas {
-    position: fixed;
+    position: absolute;
+    border:1px solid red;
     height: auto;
 }
 .noscript {
