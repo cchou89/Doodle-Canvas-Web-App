@@ -5,7 +5,18 @@ var passportLocalMongoose = require("passport-local-mongoose");
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
-    groups: [{group_id:String}]
+    lectures: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lecture"
+    }],
+    groups: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group"
+    }],
+    doodles: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Doodle"
+    }]
 });
 UserSchema.plugin(passportLocalMongoose);
 
