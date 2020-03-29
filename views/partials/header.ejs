@@ -17,6 +17,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/lectures">Lectures</a></li>
                 <li><a href="/groups">Groups</a></li>
+                <li><a href="/users">Users</a></li>
                 <% if(loggedinUser){ %>
                 <li><a href="/users/<%= loggedinUser._id%>">Hello <%= loggedinUser.username%></a></li>
                 <li><a href="/logout">Logout</a></li>

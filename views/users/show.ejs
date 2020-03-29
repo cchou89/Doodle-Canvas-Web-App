@@ -2,14 +2,16 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
-            <p class="lead"><%= user.username%></p>
-            <div class="list-group">
-                <li class="list-group-item active"><%= user.username%></li>
-            </div>
+        <div class="col-md-2">
+            <p class="lead"><%= user.username%>'s profile</p>
+            <a type="button" class="btn btn-warning btn-lg btn-block" href="/users/<%= user._id
+            %>/edit?_method=PUT">Edit</a><br/>
+            <form id="delete-form" action="/users/<%= user._id %>?_method=DELETE" method="POST">
+                <button class="btn btn-danger btn-block">Delete</button>
+            </form>
         </div>
 
-        <div class="col-md-8" id="drawingColumn">
+        <div class="col-md-10" id="drawingColumn">
             <div class="row text-center" style="display:flex; flex-wrap: wrap; ">
                 <% lectures.forEach(function(lecture){ %>
                     <div class="col-md-4 col-sm-6">
