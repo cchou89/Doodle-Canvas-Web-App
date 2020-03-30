@@ -52,8 +52,9 @@ window.addEventListener('load', listenToButton);
 function listenToButton() {
     /* start doodle button */
     startDoodle = document.getElementById('start-doodle');
-    console.log(startDoodle);
-    startDoodle.addEventListener('click', doodle);
+    if(startDoodle){
+        startDoodle.addEventListener('click', doodle);
+    }
 }
 function doodle() {
         // Event Listeners.
