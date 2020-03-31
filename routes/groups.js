@@ -1,5 +1,6 @@
 var express = require('express');
 var Group = require('../models/group');
+var User = require('../models/user');
 var authenticate = require('../middleware/authenticate');
 var router = express.Router();
 
@@ -50,6 +51,20 @@ router.get("/:id", function (request, response) {
             response.redirect('/groups');
         } else {
             response.render('groups/show', {group : foundGroup});
+        }
+    })
+});
+
+/*EDIT group*/
+// /* INDEX:  GET Group listing. */
+router.get('/', function(request, response) {
+    // find the list of all Groups
+    Group.findById(request, function (error, list) {
+        if (error){
+            request.flash('error', "Could not find the Group");
+            response.redirect('/groups');
+        } else {
+            response.render('groups/edit', {group: list});
         }
     })
 });

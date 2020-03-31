@@ -31,6 +31,8 @@
 </div>
 
 <script>
+    var User = require('../../models/user');
+
     function addMember(){
         var memberToAdd = document.getElementById("memberInput");
         if(memberToAdd.value !== ""){
@@ -47,6 +49,11 @@
 
     function search(){
         /*Searches for closest matches*/
+        var input = document.getElementById('memberInput')
+        if(input.value !== ""){
+            var searchTerm = input.value;
+            var query = User.find({name: searchTerm})
+        }
     }
 </script>
 <% include ../partials/footer %>
