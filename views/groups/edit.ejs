@@ -1,3 +1,69 @@
 <% include ../partials/header %>
+<div style="...">
+    <h1>Edit <%= group.name%> Group</h1>
+    <form action="/groups/new" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="groupName">Group Name:
+                <input type = 'text' name="groupName" placeholder="Group Name" value="<%= group.name%>"required>
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="memberInput">
+                Add Members:
+                <input type="text" name="memberInput" placeholder="Member" onchange="search()">
+            </label>
+            <button type="button" onclick="addMember()" class="addBtn">
+                Add
+            </button>
+            <button type="button" onclick="deleteMember()" class="delBtn">
+                Delete
+            </button>
+            <div id="myList">
+                <select id="memberList" size="10">
+                    <% groups.forEach(function(members){ %>
+                        <option name="members.id" ><%=members.name%></option>
+                        <% }); %>
+                    <!--Dynamically presents closest matches-->
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block">Submit!</button>
+        </div>
+    </form>
+</div>
 
+<script>
+    function addMember(){
+        var members = document.getElementById("memberInput");
+        if(members.value !== ""){
+            var selectList = document.getElementById("memberList");
+            var option = document.createElement("option");
+            option.text = members.value;
+            selectList.add(option);
+        }
+    }
+
+    function populate(){
+        var members = group.members;
+        var selectionList = document.getElementById('memberList');
+        members.forEach(function (member) {
+            var option = document.createElement('option');
+            var attribute = document.createAttribute('id');
+            option.text = member.name;
+            attribute.value = member.id;
+            option.setAttribute(attribute);
+            selectionList.add(option);
+        });
+    }
+
+    function deleteMember(){
+        var toDelete = document.getElementById("memberList");
+        toDelete.remove(toDelete.selectedIndex);
+    }
+
+    function search(){
+        /*Searches for closest matches*/
+    }
+</script>
 <% include ../partials/footer %>
