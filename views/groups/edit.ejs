@@ -4,13 +4,13 @@
     <form action="/groups/new" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="groupName">Group Name:
-                <input type = 'text' id="groupName" name="groupName" placeholder="Group Name" value="<%= group.name%>"required>
+                <input type = 'text' name="groupName" placeholder="Group Name" value="<%= group.name%>"required>
             </label>
         </div>
         <div class="form-group">
             <label for="memberInput">
                 Add Members:
-                <input type="text" id="memberInput" placeholder="Member" onchange="search()">
+                <input type="text" name="memberInput" placeholder="Member" onchange="search()">
             </label>
             <button type="button" onclick="addMember()" class="addBtn">
                 Add
@@ -21,7 +21,7 @@
             <div id="myList">
                 <select id="memberList" size="10">
                     <% groups.forEach(function(members){ %>
-                        <option id="members.id" ><%=members.name%></option>
+                        <option name="members.id" ><%=members.name%></option>
                         <% }); %>
                     <!--Dynamically presents closest matches-->
                 </select>
