@@ -53,7 +53,19 @@ router.get("/:id", function (request, response) {
         }
     })
 });
-/* @TODO*/
+/* SHOW: GET a lecture */
+router.get("/:id/live", function (request, response) {
+    Lecture.findById(request.params.id).exec(function (error, foundLecture){
+        if(error){
+            console.log(error);
+            request.flash('error', 'could not find the lecture');
+            response.redirect('/lectures');
+        } else {
+            response.render('lectures/live', {lecture : foundLecture});
+        }
+    })
+});
+
 /* EDIT: GET the edit page */
 router.get("/:id/edit", authenticate.lectureOwnership, function(request, response){
     Lecture.findById(request.params.id, function (error, foundLecture) {
