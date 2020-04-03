@@ -8,16 +8,22 @@
             </label>
         </div>
         <div class="form-group">
-            <label for="memberInput">
-                Add Members:
-                <input type="text" id="memberInput" name="memberInput" placeholder="Member" onchange="search()">
+            <label for="member1">
+                Add Member 1:
+                <input type="text" id="member1" name="member1" placeholder="Member" onchange="search()">
             </label>
-            <button type="button" onclick="addMember()" class="addBtn">
-                Add
-            </button>
-            <button type="button" onclick="deleteMember()" class="delBtn">
-                Delete
-            </button>
+
+            <label for="member2">
+                Add Member 2:
+                <input type="text" id="member2" name="member2" placeholder="Member" onchange="search()">
+            </label>
+
+<!--            <button type="button" onclick="addMember()" class="addBtn">-->
+<!--                Add-->
+<!--            </button>-->
+<!--            <button type="button" onclick="deleteMember()" class="delBtn">-->
+<!--                Delete-->
+<!--            </button>-->
             <div id="myList" name="myList">
                 <select id="memberList" name="memberList" size="10">
                     <!--Dynamically presents closest matches-->
