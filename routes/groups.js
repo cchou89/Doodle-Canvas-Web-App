@@ -28,26 +28,23 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
 router.post('/new', authenticate.isLoggedIn, function(request,response) {
     var name = request.body.groupName;
     var owner = request.user._id;
-    var members = [request.body.memberInput];
-    var newGroupID = new mongoose.Types.ObjectId();
+    var members = request.body.memberList;
     var list = [];
 
-    //TODO: Query list of members and add to list
     members.forEach(function(member){
-       var query = User.findOne({name:member}, '*', function(error){
-           if(error){
-               console.log('Cannot find %s', name);
-           } else{
-               list.push(query);
-           }
-       });
+        User.find({username:member},function(error, user){
+            if(error){
+                console.log('cannot find %s', member)
+            }else{
+                list.push(user._id);
+            }
+        });
     });
 
     var newGroup = {
-                    _id: newGroupID,
                     name: name,
                     owner:owner,
-                    members:list
+                    members: list
                     };
 
     //Create group
@@ -60,18 +57,12 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
             response.redirect("/groups");
         }
     });
-
-    User.findByIdAndUpdate(owner, {
-        $push:{
-            groups: [newGroupID]
-        }
-    })
 });
 
 /* SHOW: GET a group */
 router.get("/:id", function (request, response) {
     console.log(request.params.id);
-    Group.findById(request.params.id).exec(function (error, foundGroup){
+    var doc = Group.findById(request.params.id).exec(function (error, foundGroup){
         if(error){
             console.log(error);
             request.flash('error', 'could not find the group');
@@ -79,7 +70,7 @@ router.get("/:id", function (request, response) {
         } else {
             response.render('groups/show', {group : foundGroup});
         }
-    })
+    });
 });
 
 /*EDIT group*/
