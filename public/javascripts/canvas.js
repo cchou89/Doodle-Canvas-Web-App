@@ -25,12 +25,11 @@ tools.chalk = function () {
         context.moveTo(ev._x, ev._y);
         tool.started = true;
     };
-
     this.mousemove = function (ev) {
         if (tool.started) {
             context.lineTo(ev._x, ev._y);
             context.stroke();
-            printMousePos(ev);
+            // printMousePos(ev);
         }
     };
     this.mouseup = function (ev) {
@@ -44,6 +43,15 @@ tools.chalk = function () {
         if (tool.started) {
             tool.mouseup(ev);
         }
+    };
+    this.touchstart = function (ev) {
+        tool.mousedown(ev);
+    };
+    this.touchmove = function (ev) {
+        tool.mousemove(ev);
+    };
+    this.touchend = function (ev) {
+        tool.mouseup(ev);
     };
 };
 
@@ -83,6 +91,12 @@ function doodle() {
         canvas.addEventListener('mousemove', ev_canvas, false);
         canvas.addEventListener('mouseup',   ev_canvas, false);
         canvas.addEventListener('mouseleave', ev_canvas, false);
+        //add touch input
+        canvas.addEventListener('touchstart', ev_canvas, false);
+        canvas.addEventListener('touchend', ev_canvas, false);
+        canvas.addEventListener('touchmove', ev_canvas, false);
+
+
 }
 
 function startCanvas() {
