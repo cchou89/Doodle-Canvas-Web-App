@@ -6,6 +6,10 @@ var background_file, imageContainer, maxWidth, minHeight;
 var tool;
 var tool_default = 'chalk';
 var tools = {};
+/* line color and width variables */
+var lineColor = "black";
+var lineWidth = 5;
+
 
 // start doodle button, adds the doodle script
 var startDoodle;
@@ -43,9 +47,25 @@ tools.chalk = function () {
     };
 };
 
+//<------line Color and Width Setup------>//
+
+var lineWidth_select= document.getElementById('lineWidth');
+if (lineWidth_select) {
+    lineWidth_select.addEventListener('change', function (event) {
+        lineWidth = lineWidth_select.value;
+        toolChange();
+    });
+}
+var lineColor_select= document.getElementById('lineColor');
+if (lineColor_select) {
+    lineColor_select.addEventListener('change', function (event) {
+        lineColor = lineColor_select.value;
+        toolChange();
+    });
+}
+
 window.addEventListener('load', startCanvas);
 window.addEventListener('load', listenToButton);
-
 
 /* Add the event listener only after the start-doodle button in clicked
 * Start-doodle is only shown to the owner of a lecture */
@@ -65,7 +85,17 @@ function doodle() {
         canvas.addEventListener('mouseleave', ev_canvas, false);
 }
 
-function startCanvas () {
+function startCanvas() {
+    setupCanvas();
+    addTempCanvas();
+    activatePen();
+}
+function toolChange() {
+    addTempCanvas();
+    activatePen();
+    doodle();
+}
+function setupCanvas () {
 
     //<------Canvas Setup------>//
     canvasContainer = document.getElementById('drawingCanvas');
@@ -85,7 +115,7 @@ function startCanvas () {
     imageContainer = document.querySelector('#drawingColumn');
     maxWidth = background_file.width;
     minHeight = background_file.height;
-    if (imageContainer.clientWidth < background_file.width){
+    if (imageContainer.clientWidth < background_file.width) {
         maxWidth = imageContainer.clientWidth;
         minHeight = minHeight * maxWidth / background_file.width;
     }
@@ -93,6 +123,10 @@ function startCanvas () {
     contexto.canvas.width = maxWidth;
     contexto.canvas.height = minHeight;
 
+    /* Draw the image into the canvas */
+    contexto.drawImage(background_file, 0, 0, maxWidth, minHeight);
+}
+function addTempCanvas() {
     // Build the temporary canvas.
     var container = canvasContainer.parentNode;
     canvas = document.createElement('canvas');
@@ -106,32 +140,32 @@ function startCanvas () {
     canvas.height = minHeight;
     container.appendChild(canvas);
     context = canvas.getContext('2d');
-    context.strokeStyle = "black";// Default line color.
-    context.lineWidth = 1.0;// Default stroke weight.
-
-    /* Draw the image into the canvas */
-    contexto.drawImage(background_file, 0, 0, maxWidth, minHeight);
-
+    context.strokeStyle = lineColor;// Default line color.
+    context.lineWidth = lineWidth;// Default stroke weight.
     // Fill transparent canvas with dark grey (So we can use the color to erase).
     /* Damoon: I added globalAlpha for debugging*/
-    context.fillStyle = "#424242";
-    context.globalAlpha=0.2;
-    context.fillRect(0,0,maxWidth, minHeight);//Top, Left, Width, Height of canvas.
+    // context.fillStyle = "#424242";
+    // context.globalAlpha=0.2;
+    // context.fillRect(0,0,maxWidth, minHeight);//Top, Left, Width, Height of canvas.
+}
+
+
+function activatePen() {
 
     //<------Selector Setup------>//
 
     // Create a select field with our tools
-    var tool_select = document.getElementById('selector');
-    if (!tool_select) {
-        alert('Error! Failed to get the select element!');
-        return;
-    }
-    tool_select.addEventListener('change', ev_tool_change, false);
+    // var tool_select = document.getElementById('selector');
+    // if (!tool_select) {
+    //     alert('Error! Failed to get the select element!');
+    //     return;
+    // }
+    // tool_select.addEventListener('change', ev_tool_change, false);
 
     // Activate the default tool (chalk).
     if (tools[tool_default]) {
         tool = new tools[tool_default];
-        tool_select.value = tool_default;
+        // tool_select.value = tool_default;
     }
 
 }
