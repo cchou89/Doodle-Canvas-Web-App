@@ -26,33 +26,6 @@
                 4:
                 <input type="text" id="member1" name="member" placeholder="Member">
             </label><br>
-
-<!--            <label for="member2">-->
-<!--                2:-->
-<!--                <input type="text" id="member2" name="member2" placeholder="Member">-->
-<!--            </label>-->
-
-<!--            <label for="member3">-->
-<!--                3:-->
-<!--                <input type="text" id="member3" name="member3" placeholder="Member">-->
-<!--            </label>-->
-
-<!--            <label for="member4">-->
-<!--                4:-->
-<!--                <input type="text" id="member4" name="member4" placeholder="Member">-->
-<!--            </label>-->
-
-<!--            <label for="member5">-->
-<!--                5:-->
-<!--                <input type="text" id="member5" name="member5" placeholder="Member">-->
-<!--            </label>-->
-
-<!--            <button type="button" onclick="addMember()" class="addBtn">-->
-<!--                Add-->
-<!--            </button>-->
-<!--            <button type="button" onclick="deleteMember()" class="delBtn">-->
-<!--                Delete-->
-<!--            </button>-->
             <ul id="memberList" name="memberList">
                 <!--                    lists preexisting members in group-->
             </ul>
@@ -87,22 +60,5 @@
             var query = User.find({name: searchTerm})
         }
     }
-
-    // function send(){
-    //     var members = [];
-    //     var memberList = document.getElementById('memberList')
-    //     var added = memberList.children().length
-    //     for (var i = 0; i<added;i++){
-    //         members.push(memberList[i].innerHTML);
-    //     }
-    //
-    //     var request = {
-    //         value: members
-    //     }
-    //     var toSend = new XMLHttpRequest()
-    //     toSend.open('POST', '/new', true)
-    //     toSend.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-    //     toSend.send(JSON.stringify(request))
-    // }
 </script>
 <% include ../partials/footer %>
