@@ -31,20 +31,41 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
     console.log("We start here");
     console.log(owner);
     var member1= request.body.member1;
-    console.log("This is the query");
     console.log(member1);
     var list = [];
 
-    User.findOne({username: member1}, function (error, user) {
-        console.log(user);
-        if (error) {
-            console.log('cannot find %s', member1)
-        } else {
-            console.log("This is the query");
-            console.log(user._id);
-            list.push(mongoose.Types.ObjectId(user._id.toString()));
-        }
-    });
+     User.findOne({username: member1})
+         .exec()
+         .then(function addId(user) {
+             console.log(user);
+             console.log(user._id);
+             var objectID=mongoose.Types.ObjectId(user._id.toString());
+             list.push(objectID);
+             console.log(list);
+             return list;
+         })
+         .then(function fillSchema(list) {
+             console.log(list);
+             var newGroup = {
+                 name: name,
+                 owner: owner,
+                 members: list
+             };
+             console.log(newGroup);
+             return newGroup;
+         })
+         .then(function createGroup(newGroup){
+             //Create group
+             Group.create(newGroup, function (error) {
+                     response.redirect("/groups");
+             });
+         })
+         .catch(function(error){
+             request.flash('error', "Could not create the group");
+             //redirect back to index
+             response.redirect("/groups/new");
+         });
+
 
     // member1.forEach(function(member){
     //     if(member !== ""){
@@ -59,23 +80,6 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
     //         });
     //     }
     // });
-
-    var newGroup = {
-                    name: name,
-                    owner:owner,
-                    members: list
-                    };
-
-    //Create group
-    Group.create(newGroup, function (error) {
-        if(error){
-            request.flash('error', "Could not create the group");
-            response.redirect("/groups/new");
-        } else {
-            //redirect back to index
-            response.redirect("/groups");
-        }
-    });
 });
 
 /* SHOW: GET a group */
