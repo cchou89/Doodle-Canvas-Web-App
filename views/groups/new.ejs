@@ -14,25 +14,25 @@
                 <input type="text" id="member1" name="member1" placeholder="Member">
             </label>
 
-            <label for="member2">
-                2:
-                <input type="text" id="member2" name="member2" placeholder="Member">
-            </label>
+<!--            <label for="member2">-->
+<!--                2:-->
+<!--                <input type="text" id="member2" name="member2" placeholder="Member">-->
+<!--            </label>-->
 
-            <label for="member3">
-                3:
-                <input type="text" id="member3" name="member3" placeholder="Member">
-            </label>
+<!--            <label for="member3">-->
+<!--                3:-->
+<!--                <input type="text" id="member3" name="member3" placeholder="Member">-->
+<!--            </label>-->
 
-            <label for="member4">
-                4:
-                <input type="text" id="member4" name="member4" placeholder="Member">
-            </label>
+<!--            <label for="member4">-->
+<!--                4:-->
+<!--                <input type="text" id="member4" name="member4" placeholder="Member">-->
+<!--            </label>-->
 
-            <label for="member5">
-                5:
-                <input type="text" id="member5" name="member5" placeholder="Member">
-            </label>
+<!--            <label for="member5">-->
+<!--                5:-->
+<!--                <input type="text" id="member5" name="member5" placeholder="Member">-->
+<!--            </label>-->
 
 <!--            <button type="button" onclick="addMember()" class="addBtn">-->
 <!--                Add-->
@@ -40,9 +40,12 @@
 <!--            <button type="button" onclick="deleteMember()" class="delBtn">-->
 <!--                Delete-->
 <!--            </button>-->
+            <ul id="memberList" name="memberList">
+                <!--                    lists preexisting members in group-->
+            </ul>
         </div>
         <div class="form-group">
-            <button class="btn btn-lg btn-primary btn-block">Submit!</button>
+            <button class="btn btn-lg btn-primary btn-block" >Submit!</button>
         </div>
     </form>
 </div>
@@ -51,14 +54,13 @@
     var User = require('../../models/user');
 
     function addMember(){
-        var memberToAdd = document.getElementById("memberInput");
-        if(memberToAdd.value !== ""){
-            var selectList = document.getElementById("memberList");
-            var option = document.createElement("option");
-            option.text = memberToAdd.value;
-            selectList.add(option);
-        }
+        var memberToAdd = document.getElementById("member1");
+        var newLine = document.createElement("LI");
+        var value = document.createTextNode(memberToAdd.value);
+        newLine.appendChild(value);
+        document.getElementById("memberList").appendChild(newLine);
     }
+
     function deleteMember(){
         var toDelete = document.getElementById("memberList");
         toDelete.remove(toDelete.selectedIndex);
@@ -71,6 +73,23 @@
             var searchTerm = input.value;
             var query = User.find({name: searchTerm})
         }
+    }
+
+    function send(){
+        var members = [];
+        var memberList = document.getElementById('memberList')
+        var added = memberList.children().length
+        for (var i = 0; i<added;i++){
+            members.push(memberList[i].innerHTML);
+        }
+
+        var toSend = {
+            value: members
+        }
+        var toSend = new XMLHttpRequest()
+        toSend.open('POST', '/new', true)
+        toSend.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        toSend.send(JSON.stringify(toSend))
     }
 </script>
 <% include ../partials/footer %>

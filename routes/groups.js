@@ -28,18 +28,37 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
 router.post('/new', authenticate.isLoggedIn, function(request,response) {
     var name = request.body.groupName;
     var owner = request.user._id;
-    var members = request.body.memberList;
+    console.log("We start here");
+    console.log(owner);
+    var member1= request.body.member1;
+    console.log("This is the query");
+    console.log(member1);
     var list = [];
 
-    members.forEach(function(member){
-        User.find({username:member},function(error, user){
-            if(error){
-                console.log('cannot find %s', member)
-            }else{
-                list.push(user._id);
-            }
-        });
+    User.findOne({username: member1}, function (error, user) {
+        console.log(user);
+        if (error) {
+            console.log('cannot find %s', member1)
+        } else {
+            console.log("This is the query");
+            console.log(user._id);
+            list.push(mongoose.Types.ObjectId(user._id.toString()));
+        }
     });
+
+    // member1.forEach(function(member){
+    //     if(member !== ""){
+    //         User.find({username: member}, function (error, user) {
+    //             console.log(user);
+    //             if (error) {
+    //                 console.log('cannot find %s', member)
+    //             } else {
+    //                 console.log(user._id.toString());
+    //                 list.push(user._id.toString());
+    //             }
+    //         });
+    //     }
+    // });
 
     var newGroup = {
                     name: name,
