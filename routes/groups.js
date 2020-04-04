@@ -37,21 +37,16 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
      User.findOne({username: member1})
          .exec()
          .then(function addId(user) {
-             console.log(user);
-             console.log(user._id);
              var objectID=mongoose.Types.ObjectId(user._id.toString());
              list.push(objectID);
-             console.log(list);
              return list;
          })
          .then(function fillSchema(list) {
-             console.log(list);
              var newGroup = {
                  name: name,
                  owner: owner,
                  members: list
              };
-             console.log(newGroup);
              return newGroup;
          })
          .then(function createGroup(newGroup){
