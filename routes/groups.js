@@ -1,5 +1,4 @@
 var express = require('express');
-var mongoose = require('mongoose');
 var Group = require('../models/group');
 var User = require('../models/user');
 var authenticate = require('../middleware/authenticate');
@@ -25,8 +24,7 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
 });
 
 /* SHOW: GET a group */
-router.get("/:id", function (request, response) {
-    console.log(request.params.id);
+router.get("/:id",  function (request, response) {
     Group.findById(request.params.id).exec(function (error, foundGroup){
         if(error){
             console.log(error);
@@ -38,20 +36,20 @@ router.get("/:id", function (request, response) {
     });
 });
 
-/*EDIT group*/
-
-// /* INDEX:  GET Group listing. */
-router.get('/', function(request, response) {
-    // find the list of all Groups
-    Group.findById(request, function (error, list) {
-        if (error){
-            request.flash('error', "Could not find the Group");
-            response.redirect('/groups');
-        } else {
-            response.render('groups/edit', {group: list});
-        }
-    })
+/* DESTROY: DELETE a group */
+router.delete("/:id", authenticate.groupOwnership ,  function (request, response) {
+    Group.findById(request.params.id,function () {
+        Group.findByIdAndDelete(request.params.id,function (error) {
+            if (error) {
+                request.flash('error', 'could not delete the group');
+                response.redirect("/groups");
+            } else {
+                response.redirect("/groups");
+            }
+        });
+    });
 });
+
 module.exports = router;
 
 /* CREATE: POST Group form that creates a new Group */

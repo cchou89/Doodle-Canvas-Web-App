@@ -19,9 +19,9 @@
                 <a class="btn btn-lg btn-success btn-block" href="/lectures/<%=lecture._id%>/live">Visit Live
                     Lecture</a></br>
                 <p class="lead">Live Chat</p>
-                <ul id="messages"></ul>
-                <form action="">
-                    <input id="m" autocomplete="off" />
+                <ul id="message-list"></ul>
+                <form id ="message-form" action="#" method="get">
+                    <input id="message" autocomplete="off" />
                     <button class="btn btn-md btn-default ">Send</button>
                 </form>
             <% }%>
@@ -29,14 +29,20 @@
         <div class="col-md-10" id="drawingColumn">
             <div id="blackboardPlaceholder">
                 <!-- Tool Selector -->
+                <% if(loggedinUser && lecture.author.equals(loggedinUser._id)){ %>
                 <div id="optionsContainer">
-                    <select name="selector" id="selector">
-                        <option value="chalk"> Chalk </option>
-                        <option value="line"> Line </option>
-                        <option value="rect"> Rectangle </option>
+                    <label for="lineColor">choose color:</label>
+                    <select name="lineColor" id="lineColor" >
+                        <option value="Black"> Black </option>
+                        <option value="Red"> Red </option>
+                        <option value="Blue"> Blue </option>
                     </select>
-                    <button type="button" id="test"> Test </button>
+                    <label for="lineWidth">choose line width:</label>
+                    <input class="listInput" name="lineWidth" id="lineWidth" type="number"
+                           pattern="[0-9]" min="1" max="100" value="5"
+                           oninput="validity.valid||(value='');" required="required" />
                 </div>
+                <% }%>
                 <canvas id="drawingCanvas">
                     <img id="background_file" src='data:image;base64, <%= lecture.background_file%>' alt="lecture
                     slide">
