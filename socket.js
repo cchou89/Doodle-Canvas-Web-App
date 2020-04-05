@@ -30,9 +30,11 @@ function init(server){
             list.forEach(function (lecture){
 
                  client.on(lecture._id, function (message) {
-                     console.log('a user sent this message ' + message);
-                     io.emit(lecture._id, message);
+                     if(message !== ""){
+                         io.emit(lecture._id, message);
+                     }
                 });
+         /* end of live chat */
 
                 // first send the history to the new client
                 var lecture_draw_line = lecture._id + "draw_line";
