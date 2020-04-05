@@ -26,14 +26,20 @@
                 4:
                 <input type="text" id="member1" name="member" placeholder="Member">
             </label><br>
-            <% members.forEach((member) => { %>
-                <tr>
-                    <th scope="row"><%= member.name %></th>
-                    <td>
-                        <a href="/delete/<%= member.id %>" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            <% }) %>
+            <table>
+                <th scope="col">Name</th>
+                <tbody>
+                <% members.forEach((member) => { %>
+                    <tr>
+                        <th scope="row"><%= member.userame %></th>
+                        <td><%= member.username %></td>
+                        <td>
+                            <a href="/delete/<%= member._id %>" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
         </div>
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block">Submit!</button>
