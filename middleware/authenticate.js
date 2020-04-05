@@ -49,32 +49,32 @@ authenticate.groupOwnership = function(request, response, next) {
         });
     }
 };
-// authenticate.groupMembership = function(request, response, next) {
-//     if (!request.isAuthenticated()) {
-//         request.flash('error', "First log in");
-//         response.redirect("/login");
-//     } else {
-//         Group.findById(request.params.id).exec(function (error, foundGroup) {
-//             if (error) {
-//                 request.flash('error', 'could not find the group');
-//                 response.redirect('/groups');
-//             } else {
-//                 let isMember = false;
-//                 console.log(request.user._id);
-//                 foundGroup.members.forEach(function (member) {
-//                     console.log(member._id);
-//                     if (request.user._id === member._id) {
-//                         isMember = true;
-//                     }
-//                 });
-//                 if (!isMember) {
-//                     request.flash("error", "You don't own the group");
-//                     response.redirect("back");
-//                 } else {
-//                     next();
-//                 }
-//             }
-//         });
-//     }
-// };
+authenticate.groupMembership = function(request, response, next) {
+    if (!request.isAuthenticated()) {
+        request.flash('error', "First log in");
+        response.redirect("/login");
+    } else {
+        Group.findById(request.params.id).exec(function (error, foundGroup) {
+            if (error) {
+                request.flash('error', 'could not find the group');
+                response.redirect('/groups');
+            } else {
+                let isMember = false;
+                console.log(request.user._id);
+                foundGroup.members.forEach(function (member) {
+                    console.log(member._id);
+                    if (request.user._id === member._id) {
+                        isMember = true;
+                    }
+                });
+                if (!isMember) {
+                    request.flash("error", "You don't own the group");
+                    response.redirect("back");
+                } else {
+                    next();
+                }
+            }
+        });
+    }
+};
 module.exports = authenticate;

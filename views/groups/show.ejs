@@ -5,7 +5,17 @@
         <div class="col-md-2">
             <p class="lead"><%= group.name%></p>
             <div class="list-group">
-                <li class="list-group-item active">Memberlist Placeholder</li>
+                <table>
+                    <th scope="col">Name</th>
+                    <tbody>
+                    <% members.forEach((member) => { %>
+                        <tr>
+                            <th scope="row"><%= member.userame %></th>
+                            <td><%= member.username %></td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
                 <% if(loggedinUser && group.owner.equals(loggedinUser._id)){ %>
                     <a class="btn btn-xs btn-warning" href="/groups/<%= group._id %>/edit">Edit</a>
                     <form id="delete-form" action="/groups/<%= group._id %>?_method=DELETE" method="POST">
@@ -13,6 +23,16 @@
                     </form>
                 <% }%>
             </div>
+            <% if(loggedinUser){ %>
+            <a class="btn btn-lg btn-success btn-block" href="/groups/<%=group._id%>/live">Visit Live
+                Lecture</a></br>
+            <p class="lead">Live Chat</p>
+            <ul id="message-list"></ul>
+            <form id ="message-form" action="#" method="get">
+                <input id="message" autocomplete="off" />
+                <button class="btn btn-md btn-default ">Send</button>
+            </form>
+            <% }%>
         </div>
         <div class="col-md-10">
             <div class="thumbnail">
@@ -20,5 +40,8 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script type="text/javascript" src="/javascripts/chat-client.js"></script>
 
 <% include ../partials/footer %>

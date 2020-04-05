@@ -1,4 +1,5 @@
 var express = require('express');
+var mongoose = require('mongoose');
 var Group = require('../models/group');
 var User = require('../models/user');
 var mongoose = require('mongoose');
@@ -9,20 +10,137 @@ var router = express.Router();
 /* INDEX:  GET Group listing. */
 router.get('/', function(request, response) {
     // find the list of all Groups
-    Group.find({}, function (error, list) {
-        if (error){
-            request.flash('error', "Could not find the Group");
-            response.redirect('/groups');
-        } else {
+    Group.find({$or: [{owner: request.user._id}, {members: {$in: request.user._id}}]})
+        .then(function (list) {
             response.render('groups/index', {groups: list});
-        }
-    })
+        }).catch(function (error) {
+        request.flash('error', "Could not find the Group");
+        response.redirect('/groups');
+    });
 });
 
 /* NEW: GET group form */
 router.get("/new", authenticate.isLoggedIn, function(request, response){
         response.render('groups/new');
 });
+
+/* SHOW: GET a group */
+router.get("/:id", function (request, response) {
+    Group.findById(request.params.id)
+        .exec()
+        .then(function (foundGroup) {
+            var listMembers = foundGroup.members;
+            User.find({_id: listMembers})
+                .exec()
+                .then(function (result) {
+                    return Promise.all(result)
+                        .then(function (found) {
+                            return response.render('groups/show', {group: foundGroup, members: found});
+                        })
+                        .catch(function (error) {
+                            request.flash('error', "Could not find the Group");
+                            response.redirect('/groups/:id');
+                        });
+                });
+        })
+        .catch(function (error) {
+            request.flash('error', "Could not find the Group");
+            response.redirect('/groups/:id');
+        });
+});
+
+/*EDIT group*/
+/* INDEX:  GET Group listing. */
+router.get('/:id/edit',function(request, response) {
+    Group.findById(request.params.id)
+        .exec()
+        .then(function (foundGroup) {
+            var listMembers = foundGroup.members;
+            User.find({_id: listMembers})
+                .exec()
+                .then(function (result) {
+                    return Promise.all(result)
+                        .then(function (found) {
+                            return response.render('groups/edit', {group: foundGroup, members:found});
+                        })
+                        .catch(function (error) {
+                            request.flash('error', "Could not find the Group");
+                            response.redirect('/groups'
+                            );
+                        });
+                });
+        })
+        .catch(function (error) {
+            request.flash('error', "Could not find the Group");
+            response.redirect('/groups'
+            );
+        });
+});
+
+// UPDATE: PUT the edit page
+router.put('/:id', function (request, response) {
+    var memberList = request.body.member;
+    var list = [];
+    Group.findById(request.params.id)
+        .then(function (foundLecture) {
+
+            /* this update is not safe but works for now
+            *  @TODO can be improved by using findByIdAndUpdate, or Buffer.alloc() */
+            User.find({username: memberList})
+                .exec()
+                .then(function (result) {
+                    return Promise.all(result)
+                        .then(function findNewID(user) {
+                            list = user.map(user => mongoose.Types.ObjectId(user._id.toString()));
+                            return list;
+                        });
+                })
+                .catch(function (error) {
+                    request.flash('error', "Could not find the users");
+                    //redirect back to index
+                    response.redirect('/groups/' + foundLecture._id);
+                })
+                .then(function updateGroup(list) {
+                    return Promise.all(list)
+                        .then(function (member) {
+                            foundGroupMembers =foundLecture.members;
+                            foundGroupMembers.push(member);
+                            var unique = Array.from(new Set(foundGroupMembers));
+                            foundGroupMembers = unique;
+                            foundLecture.name = request.body.groupName;
+                            console.log(foundGroupMembers);
+                            foundLecture.save();
+                        });
+                })
+                .then(function(){
+                    response.redirect("/groups/" + foundLecture._id);
+                })
+                .catch(function (error) {
+                    request.flash('error', "Could not update group");
+                    //redirect back to index
+                    response.redirect('/groups/' + foundLecture._id + '/edit');
+                });
+        });
+});
+
+//REMOVE: Remove a member
+router.delete('/:groupID/delete/:id', function(request, response) {
+    var groupID = request.params.groupID;
+    var userID = request.params.id;
+    Group.find({_id:groupID})
+        .then(function(result){
+            groupMembers = result[0].members;
+            var userObjectID = mongoose.Types.ObjectId(userID);
+            var index = groupMembers.indexOf(userObjectID);
+            groupMembers.splice(index, 1);
+            result[0].members = groupMembers;
+            result[0].save();
+        })
+        .then(function () {
+            response.redirect('/groups/'+request.params.groupID+'/edit');
+        });
+});
+
 
 /* CREATE: POST Group form that creates a new Group */
 router.post('/new', authenticate.isLoggedIn, function(request,response) {
@@ -41,6 +159,7 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
                 })
         })
         .then(function fillSchema(list) {
+            list.push(mongoose.Types.ObjectId(owner));
             return {
                 _id: mongoose.Types.ObjectId(),
                 name: name,

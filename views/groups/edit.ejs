@@ -1,89 +1,58 @@
 <% include ../partials/header %>
 <div style="...">
     <h1>Edit <%= group.name%> Group</h1>
-    <form action="/groups/new" method="POST" enctype="multipart/form-data">
+    <form action="/groups/<%=group._id%>?_method=PUT" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="groupName">Group Name:
                 <input type = 'text' name="groupName" placeholder="Group Name" value="<%= group.name%>"required>
             </label>
         </div>
         <div class="form-group">
+            <!--            TODO:Possibly add method to make this dynamic-->
             <h2>Add Members</h2>
-            <label for="member1">
+            <label for="member">
                 1:
-                <input type="text" id="member1" name="member1" placeholder="Member">
-            </label>
-
-            <label for="member2">
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <label for="member">
                 2:
-                <input type="text" id="member2" name="member2" placeholder="Member">
-            </label>
-
-            <label for="member3">
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <label for="member">
                 3:
-                <input type="text" id="member3" name="member3" placeholder="Member">
-            </label>
-
-            <label for="member4">
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <label for="member">
                 4:
-                <input type="text" id="member4" name="member4" placeholder="Member">
-            </label>
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
 
             <label for="member5">
                 5:
                 <input type="text" id="member5" name="member5" placeholder="Member">
             </label>
-
-<!--            <button type="button" onclick="addMember()" class="addBtn">-->
-<!--                Add-->
-<!--            </button>-->
-<!--            <button type="button" onclick="deleteMember()" class="delBtn">-->
-<!--                Delete-->
-<!--            </button>-->
-
-            <div id="myList" name="myList">
-                <list id="memberList" name="memberList" size="10">
-<!--                    lists preexisting members in group-->
-                </list>
-            </div>
         </div>
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block">Submit!</button>
         </div>
     </form>
+    <table>
+        <th scope="col">Name</th>
+        <tbody>
+        <% members.forEach((member) => { %>
+            <tr>
+                <th scope="row"><%= member.userame %></th>
+                <td><%= member.username %></td>
+                <td>
+                    <form id="delete-form" action="/groups/<%= group._id %>/delete/<%= member._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-lg btn-danger btn-block">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+
 </div>
 
-<script>
-    function addMember(){
-        var members = document.getElementById("memberInput");
-        if(members.value !== ""){
-            var selectList = document.getElementById("memberList");
-            var option = document.createElement("option");
-            option.text = members.value;
-            selectList.add(option);
-        }
-    }
-
-    function populate(){
-        var members = group.members;
-        var selectionList = document.getElementById('memberList');
-        members.forEach(function (member) {
-            var option = document.createElement('option');
-            var attribute = document.createAttribute('id');
-            option.text = member.name;
-            attribute.value = member.id;
-            option.setAttribute(attribute);
-            selectionList.add(option);
-        });
-    }
-
-    function deleteMember(){
-        var toDelete = document.getElementById("memberList");
-        toDelete.remove(toDelete.selectedIndex);
-    }
-
-    function search(){
-        /*Searches for closest matches*/
-    }
-</script>
 <% include ../partials/footer %>
