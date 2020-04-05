@@ -1,6 +1,7 @@
 var express = require('express');
 var Group = require('../models/group');
 var User = require('../models/user');
+var mongoose = require('mongoose');
 var authenticate = require('../middleware/authenticate');
 var router = express.Router();
 
