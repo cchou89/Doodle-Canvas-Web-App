@@ -42,7 +42,7 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
 });
 
 /* SHOW: GET a group */
-router.get("/:id", authenticate.groupMembership, function (request, response) {
+router.get("/:id",  function (request, response) {
     Group.findById(request.params.id).exec(function (error, foundGroup){
         if(error){
             console.log(error);
@@ -54,5 +54,18 @@ router.get("/:id", authenticate.groupMembership, function (request, response) {
     })
 });
 
+/* DESTROY: DELETE a group */
+router.delete("/:id", authenticate.groupOwnership ,  function (request, response) {
+    Group.findById(request.params.id,function () {
+        Group.findByIdAndDelete(request.params.id,function (error) {
+            if (error) {
+                request.flash('error', 'could not delete the group');
+                response.redirect("/groups");
+            } else {
+                response.redirect("/groups");
+            }
+        });
+    });
+});
 
 module.exports = router;
