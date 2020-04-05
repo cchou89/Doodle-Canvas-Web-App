@@ -47,9 +47,14 @@ document.addEventListener("DOMContentLoaded", function() {
     var canvasWidth=canvas.width;
     var canvasHeight=canvas.height;
     var isDragging=false;
+    var id = extractLiveURL();
+    var lecture_draw_line = id+ "draw_line";
+    var lecture_clear = id + "clear";
+    var lecture_drag = id + "drag";
 
     // draw line received from server
-    drawNamespace.on('draw_line', function (data) {
+    drawNamespace.on(lecture_draw_line, function (data) {
+        console.log(lecture_draw_line);
         var line = data.line;
         context.beginPath();
         context.moveTo(line[0].x * width, line[0].y * height);
@@ -58,9 +63,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Clear canvas
-    drawNamespace.on('clearit', function(){
+    drawNamespace.on(lecture_clear, function(){
+        console.log(lecture_clear);
         context.clearRect(0, 0, width, height);
-        console.log("client clearit");
+        // console.log("client clearit");
     });
 
     // main loop, running every 25ms
@@ -68,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // check if the user is drawing
         if (mouse.click && mouse.move && mouse.pos_prev) {
             // send line to to the server
-            drawNamespace.emit('draw_line', {line: [mouse.pos, mouse.pos_prev]});
+            drawNamespace.emit(lecture_draw_line, {line: [mouse.pos, mouse.pos_prev]});
             mouse.move = false;
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
@@ -108,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
             canMouseY=parseInt(e.clientY-offsetY);
             // if the drag flag is set, clear the canvas and draw the image
             if(isDragging){
-                drawNamespace.emit('drag', [canMouseX, canMouseY])
+                drawNamespace.emit(lecture_drag , [canMouseX, canMouseY])
             }
         }
     });
@@ -118,14 +124,13 @@ document.addEventListener("DOMContentLoaded", function() {
 function extractLiveURL() {
     var url = window.location.href;
     var paths = url.split('/');
-    // var namespace = paths[paths.length-2];
-    // if(namespace === ""){
-    //     namespace = '/';
-    // }
-    paths.pop();
-    return paths;
+    var id = paths[paths.length-2];
+    console.log(id);
+    return id;
 }
 
 function clearit(){
-    drawNamespace.emit('clearit', true);
+    var id = extractLiveURL();
+    var lecture_clear = id + "clear";
+    drawNamespace.emit(lecture_clear, true);
 }
