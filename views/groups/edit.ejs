@@ -26,6 +26,11 @@
                 4:
                 <input type="text" id="member1" name="member" placeholder="Member">
             </label><br>
+
+            <label for="member5">
+                5:
+                <input type="text" id="member5" name="member5" placeholder="Member">
+            </label>
         </div>
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block">Submit!</button>
@@ -50,12 +55,4 @@
 
 </div>
 
-<script>
-    function deleteMember(member){
-        var memberLIst = group.members;
-        var filterMemberList = memberLIst.filter(id => id !== mongoose.Types.ObjectId(member);
-        memberList = filterMemberList;
-        group.save();
-    }
-</script>
 <% include ../partials/footer %>

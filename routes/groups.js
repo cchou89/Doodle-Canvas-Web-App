@@ -7,7 +7,7 @@ var authenticate = require('../middleware/authenticate');
 var router = express.Router();
 
 
-// /* INDEX:  GET Group listing. */
+/* INDEX:  GET Group listing. */
 router.get('/', function(request, response) {
     // find the list of all Groups
     Group.find({$or: [{owner: request.user._id}, {members: {$in: request.user._id}}]})
@@ -194,7 +194,7 @@ router.get("/:id",  function (request, response) {
         } else {
             response.render('groups/show', {group : foundGroup});
         }
-    })
+    });
 });
 
 /* DESTROY: DELETE a group */
@@ -212,3 +212,4 @@ router.delete("/:id", authenticate.groupOwnership ,  function (request, response
 });
 
 module.exports = router;
+

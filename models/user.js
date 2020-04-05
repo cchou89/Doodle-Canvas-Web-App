@@ -9,10 +9,6 @@ var UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Lecture"
     }],
-    groups: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Group"
-    }],
     doodles: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Doodle"
