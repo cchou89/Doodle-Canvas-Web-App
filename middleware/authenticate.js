@@ -1,4 +1,5 @@
 var Lecture = require("../models/lecture");
+var Group = require("../models/group");
 // var User = require("../models/user");
 
 var authenticate = {};
@@ -22,7 +23,7 @@ authenticate.lectureOwnership = function(request, response, next) {
                 request.flash('error', 'could not find the lecture');
                 response.redirect('/lectures');
             } else if (!foundLecture.author.equals(request.user._id)) {
-                request.flash("error", "You don't own the lecture");
+                request.flash("error", "You are not the author of the lecture");
                 response.redirect("back");
             } else {
                 next();
@@ -30,5 +31,50 @@ authenticate.lectureOwnership = function(request, response, next) {
         });
     }
 };
-
+authenticate.groupOwnership = function(request, response, next) {
+    if(!request.isAuthenticated()){
+        request.flash('error', "First log in");
+        response.redirect("/login");
+    } else {
+        Group.findById(request.params.id).exec(function (error, foundGroup){
+            if(error){
+                request.flash('error', 'could not find the group');
+                response.redirect('/groups');
+            } else if (!foundGroup.owner.equals(request.user._id)) {
+                request.flash("error", "You don't own the group");
+                response.redirect("back");
+            } else {
+                next();
+            }
+        });
+    }
+};
+authenticate.groupMembership = function(request, response, next) {
+    if (!request.isAuthenticated()) {
+        request.flash('error', "First log in");
+        response.redirect("/login");
+    } else {
+        Group.findById(request.params.id).exec(function (error, foundGroup) {
+            if (error) {
+                request.flash('error', 'could not find the group');
+                response.redirect('/groups');
+            } else {
+                let isMember = false;
+                console.log(request.user._id);
+                foundGroup.members.forEach(function (member) {
+                    console.log(member._id);
+                    if (request.user._id === member._id) {
+                        isMember = true;
+                    }
+                });
+                if (!isMember) {
+                    request.flash("error", "You don't own the group");
+                    response.redirect("back");
+                } else {
+                    next();
+                }
+            }
+        });
+    }
+};
 module.exports = authenticate;

@@ -42,7 +42,7 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
 });
 
 /* SHOW: GET a group */
-router.get("/:id", function (request, response) {
+router.get("/:id", authenticate.groupMembership, function (request, response) {
     Group.findById(request.params.id).exec(function (error, foundGroup){
         if(error){
             console.log(error);
