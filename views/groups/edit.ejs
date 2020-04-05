@@ -26,36 +26,36 @@
                 4:
                 <input type="text" id="member1" name="member" placeholder="Member">
             </label><br>
-            <table>
-                <th scope="col">Name</th>
-                <tbody>
-                <% members.forEach((member) => { %>
-                    <tr>
-                        <th scope="row"><%= member.userame %></th>
-                        <td><%= member.username %></td>
-                        <td>
-                            <a href="/delete/<%= member._id %>" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                <% }) %>
-                </tbody>
-            </table>
         </div>
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block">Submit!</button>
         </div>
     </form>
+    <table>
+        <th scope="col">Name</th>
+        <tbody>
+        <% members.forEach((member) => { %>
+            <tr>
+                <th scope="row"><%= member.userame %></th>
+                <td><%= member.username %></td>
+                <td>
+                    <form id="delete-form" action="/groups/<%= group._id %>/delete/<%= member._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-lg btn-danger btn-block">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+
 </div>
 
 <script>
-    function addMember(){
-        var members = document.getElementById("memberInput");
-        if(members.value !== ""){
-            var selectList = document.getElementById("memberList");
-            var option = document.createElement("option");
-            option.text = members.value;
-            selectList.add(option);
-        }
+    function deleteMember(member){
+        var memberLIst = group.members;
+        var filterMemberList = memberLIst.filter(id => id !== mongoose.Types.ObjectId(member);
+        memberList = filterMemberList;
+        group.save();
     }
 </script>
 <% include ../partials/footer %>

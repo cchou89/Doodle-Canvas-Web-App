@@ -40,7 +40,6 @@ router.get("/:id", function (request, response) {
 /*EDIT group*/
 /* INDEX:  GET Group listing. */
 router.get('/:id/edit',function(request, response) {
-// find the list of all Groups
     Group.findById(request.params.id)
         .exec()
         .then(function (foundGroup) {
@@ -111,6 +110,25 @@ router.put('/:id', function (request, response) {
                 });
         });
 });
+
+//REMOVE: Remove a member
+router.delete('/:groupID/delete/:id', function(request, response) {
+    var groupID = request.params.groupID;
+    var userID = request.params.id;
+    Group.find({_id:groupID})
+        .then(function(result){
+            groupMembers = result[0].members;
+            var userObjectID = mongoose.Types.ObjectId(userID);
+            var index = groupMembers.indexOf(userObjectID);
+            groupMembers.splice(index, 1);
+            result[0].members = groupMembers;
+            result[0].save();
+        })
+        .then(function () {
+            response.redirect('/groups/'+request.params.groupID+'/edit');
+        });
+});
+
 
 /* CREATE: POST Group form that creates a new Group */
 router.post('/new', authenticate.isLoggedIn, function(request,response) {
