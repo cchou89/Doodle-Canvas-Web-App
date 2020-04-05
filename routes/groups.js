@@ -10,14 +10,13 @@ var router = express.Router();
 // /* INDEX:  GET Group listing. */
 router.get('/', function(request, response) {
     // find the list of all Groups
-    Group.find({}, function (error, list) {
-        if (error){
-            request.flash('error', "Could not find the Group");
-            response.redirect('/groups');
-        } else {
+    Group.find({$or: [{owner: request.user._id}, {members: {$in: request.user._id}}]})
+        .then(function (list) {
             response.render('groups/index', {groups: list});
-        }
-    })
+        }).catch(function (error) {
+        request.flash('error', "Could not find the Group");
+        response.redirect('/groups');
+    });
 });
 
 /* NEW: GET group form */
