@@ -27,15 +27,27 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
 
 /* SHOW: GET a group */
 router.get("/:id", function (request, response) {
-    Group.findById(request.params.id).exec(function (error, foundGroup){
-        if(error){
-            console.log(error);
-            request.flash('error', 'could not find the group');
+    Group.findById(request.params.id)
+        .exec()
+        .then(function (foundGroup) {
+            var listMembers = foundGroup.members;
+            User.find({_id: listMembers})
+                .exec()
+                .then(function (result) {
+                    return Promise.all(result)
+                        .then(function (found) {
+                            return response.render('groups/show', {group: foundGroup, members: found});
+                        })
+                        .catch(function (error) {
+                            request.flash('error', "Could not find the Group");
+                            response.redirect('/groups/:id');
+                        });
+                });
+        })
+        .catch(function (error) {
+            request.flash('error', "Could not find the Group");
             response.redirect('/groups/:id');
-        } else {
-            response.render('groups/show', {group : foundGroup});
-        }
-    });
+        });
 });
 
 /*EDIT group*/
