@@ -11,6 +11,7 @@ var User = require('./models/user');
 var mongoose = require('mongoose');
 var fileUpload = require('express-fileupload');
 var methodOverride = require('method-override');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 app.use(fileUpload());
 app.use(methodOverride("_method"));
+app.use(cors());
 
 /* PASSPORT CONFIGURATION */
 app.use(require("express-session")({
