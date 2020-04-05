@@ -9,6 +9,9 @@
                 <% if(loggedinUser && lecture.author.equals(loggedinUser._id)){ %>
                     <button id="start-doodle" class="btn btn-lg btn-primary btn-block" >Start
                         doodle</button><br/>
+
+                    <button class="btn btn-lg btn-primary btn-block" type="submit" form="lineHistory">Submit doodle</button><br/>
+
                     <a class="btn btn-lg btn-warning btn-block" href="/lectures/<%= lecture._id %>/edit">Edit</a>
                     <form id="delete-form" action="/lectures/<%= lecture._id %>?_method=DELETE" method="POST">
                         <button class="btn btn-lg btn-danger btn-block">Delete</button>
@@ -25,6 +28,10 @@
                 <!-- Tool Selector -->
                 <% if(loggedinUser && lecture.author.equals(loggedinUser._id)){ %>
                 <div id="optionsContainer">
+                    <select name="selector" id="selector">
+                        <option value="pen"> Pen </option>
+                        <option value="eraser"> Eraser </option>
+                    </select>
                     <label for="lineColor">choose color:</label>
                     <select name="lineColor" id="lineColor" >
                         <option value="Black"> Black </option>
@@ -45,6 +52,11 @@
             </div>
         </div>
     </div>
+</div>
+<div class="container">
+    <form id= "lineHistory" action="/lectures/<%= lecture._id %>/lineHistory" method="POST">
+        <input type="text" id="historyInput" name="historyInput" value= <%= drawing %>><br>
+    </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>

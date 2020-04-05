@@ -7,6 +7,11 @@
 #background_file{
     display: none;
 }
+
+#lineHistory{
+    display: none;
+}
+
 #drawingCanvas {
     position: absolute;
     border:1px solid red;

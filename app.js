@@ -8,6 +8,7 @@ var flash = require('connect-flash');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var User = require('./models/user');
+var Drawing = require('./models/drawing');
 var mongoose = require('mongoose');
 var fileUpload = require('express-fileupload');
 var methodOverride = require('method-override');
@@ -20,10 +21,25 @@ var groupsRouter = require('./routes/groups');
 
 var app = express();
 
-// var url = process.env.DATABASEURL || "mongodb://localhost/skynetLocalDB";
+//var url = process.env.DATABASEURL || "mongodb://localhost/skynetLocalDB";
 var url = process.env.DATABASEURL || "mongodb+srv://damoon:Summer2020@skynet-ac44p.azure.mongodb.net/test?retryWrites=true&w=majority";
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
+//mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
+
+//TODO: may want to remove if you explicitly create the Drawing collection in another way
+//Drawings are not explicitly created by users or server. For initial creation of Drawings, we need to create it if it doesn't exist
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+  if (err) {
+    console.log(err);
+  }
+  client.db.listCollections().toArray(function(err, collections) {
+    if(!collections.find(function(entry){return entry.name === "drawings";})) {
+      //drawings schema does not exist, forcibly create schema using a stub entry
+      Drawing.create({}, function (error) {});
+    }
+  });
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,6 +48,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));

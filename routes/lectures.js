@@ -1,4 +1,5 @@
 var express = require('express');
+var Drawing = require('../models/drawing');
 var Lecture = require('../models/lecture');
 var authenticate = require('../middleware/authenticate');
 var router = express.Router();
@@ -43,16 +44,29 @@ router.post('/new', authenticate.isLoggedIn, function (request,response) {
 
 /* SHOW: GET a lecture */
 router.get("/:id", function (request, response) {
-    Lecture.findById(request.params.id).exec(function (error, foundLecture){
-        if(error){
+    Drawing.find({lecture: request.params.id}, function (error, foundDrawing) {
+        if (error) {
             console.log(error);
-            request.flash('error', 'could not find the lecture');
+            request.flash('error', 'could not find the drawing');
             response.redirect('/lectures');
         } else {
-            response.render('lectures/show', {lecture : foundLecture});
+            var stringDrawingHistory = [];
+            if (foundDrawing.length > 0) {
+                stringDrawingHistory = JSON.stringify(foundDrawing[0].events);
+            }
+            Lecture.findById(request.params.id).exec(function (error, foundLecture) {
+                if (error) {
+                    console.log(error);
+                    request.flash('error', 'could not find the lecture');
+                    response.redirect('/lectures');
+                } else {
+                    response.render('lectures/show', {lecture: foundLecture, drawing: stringDrawingHistory});
+                }
+            });
         }
-    })
+    });
 });
+
 /* SHOW: GET a lecture */
 router.get("/:id/live", function (request, response) {
     Lecture.findById(request.params.id).exec(function (error, foundLecture){
@@ -86,8 +100,51 @@ router.put('/:id', authenticate.lectureOwnership, function (request, response) {
         response.redirect("/lectures/" + request.params.id);
     });
 });
+
+router.post("/:id/lineHistory", function(request, response) {
+    var lectureid = request.params.id;
+    var authorid = request.user._id;
+    var lineHistory = JSON.parse(request.body["historyInput"]);
+    //finds drawing based lecture ID and user ID. If found, push new history into events. If not found, create new model
+    Drawing.findOneAndUpdate({lecture: lectureid, author: authorid}, {$push: {events: {$each: lineHistory}}}, function (error, object) {
+        if(error){
+            request.flash('error', "bad update");
+        } else {
+            if (object == null) {
+                //target not found, create new drawing model
+                var newDrawing = {
+                    author: authorid,
+                    lecture: lectureid,
+                    events: lineHistory
+                };
+                Drawing.create(newDrawing, function (error) { if(error){ request.flash('error', "Could not create drawing");}});
+            }
+        }
+        response.redirect("/lectures/" + request.params.id);
+    });
+});
+
 /* DESTROY: DELETE a lecture*/
 router.delete("/:id", authenticate.lectureOwnership, function (request, response) {
+    Drawing.deleteOne({lecture: request.params.id}, function (error) {
+        if (error) {
+            console.log(error);
+            request.flash('error', 'could not find the drawing');
+            response.redirect('/lectures');
+        } else {
+            Lecture.findById(request.params.id, function () {
+                Lecture.findByIdAndDelete(request.params.id, function (error) {
+                    if (error) {
+                        request.flash('error', 'could not delete the lecture');
+                        response.redirect("/lectures");
+                    } else {
+                        response.redirect("/lectures");
+                    }
+                });
+            });
+        }
+    });
+    /*
     Lecture.findById(request.params.id,function () {
         Lecture.findByIdAndDelete(request.params.id,function (error) {
             if (error) {
@@ -98,6 +155,91 @@ router.delete("/:id", authenticate.lectureOwnership, function (request, response
             }
         });
     });
+    */
 });
+
+///////////////////////////////////////////////////////
+//TODO: used for referencing, remove when done
+//////////////////////////////////////////////////////
+
+/*
+var Drawing = require("../models/drawing");
+
+//handle new drawing entry
+router.post('/testSubmit', function(request, response) {
+
+    var newDrawing = {
+        author: request.params.id,
+        lecture: request.user._id,
+        history: [],
+    };
+
+    Drawing.create(newDrawing, function (error) {
+        if(error){
+            request.flash('error', "Could not create drawing");
+            response.redirect("/lectures/" + request.params.id);
+        } else {
+            //redirect back to index
+            response.redirect("/lectures/" + request.params.id);
+        }
+    });
+});
+
+//handle find existing drawing entry and update field
+router.post('/testUpdate', function(request, response) {
+    var name = request.body.name;
+    var lecID = request.body.lecture;
+    var xcoor = parseInt(request.body.x);
+    var ycoor = parseInt(request.body.y);
+    var coor = {x_value: xcoor, y_value: ycoor};
+    var filter = {name: name, lecture: lecID};
+    Drawing.findOneAndUpdate(filter, {$addToSet: {history: coor}}, function (error, object) {
+        if(error){
+            request.flash('error', "bad update");
+            response.redirect("/");
+        } else {
+            //occurs even if target is not in database
+            console.log(object);
+            response.redirect("/");
+        }
+    });
+});
+
+//handle find existing drawing entry
+router.post('/testFind', function(request, response) {
+    var name = request.body.name;
+    var lecID = request.body.lecture;
+    //use instead of findOne to return all entries in Drawing schema
+    Drawing.find({}, 'history', {lean: true}, function (error, object) {
+        //use instead of find to return target entry in Drawing schema
+        //Drawing.findOne({name: name, lecture: lecID}, function(error,object) {
+        if(error){
+            request.flash('error', "bad query");
+            response.redirect("/");
+        } else {
+            //occurs even if target is not in database
+            console.log(object[0].history);
+            //console.log(object[0].history[0]); //coordinates print out as objectids for some reason?
+            response.redirect("/");
+        }
+    });
+});
+
+router.post("/testDelete", function (request, response) {
+    var name = request.body.name;
+    var lecID = request.body.lecture;
+    Drawing.findOneAndDelete({name: name, lecture: lecID}, function(error) {
+        if(error){
+            request.flash('error', "delete failed and aborted");
+            response.redirect("/");
+        } else {
+            //occurs even if target is not in database
+            //console.log(object);
+            console.log("delete successful");
+            response.redirect("/");
+        }
+    });
+});
+*/
 
 module.exports = router;
