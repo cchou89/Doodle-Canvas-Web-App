@@ -19,9 +19,9 @@
                 <a class="btn btn-lg btn-success btn-block" href="/lectures/<%=lecture._id%>/live">Visit Live
                     Lecture</a></br>
                 <p class="lead">Live Chat</p>
-                <ul id="messages"></ul>
-                <form action="">
-                    <input id="m" autocomplete="off" />
+                <ul id="message-list"></ul>
+                <form id ="message-form" action="#" method="get">
+                    <input id="message" autocomplete="off" />
                     <button class="btn btn-md btn-default ">Send</button>
                 </form>
             <% }%>
