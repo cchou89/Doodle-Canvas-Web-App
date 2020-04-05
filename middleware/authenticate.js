@@ -31,4 +31,23 @@ authenticate.lectureOwnership = function(request, response, next) {
     }
 };
 
+authenticate.GroupOwnership = function(request, response, next) {
+    if(!request.isAuthenticated()){
+        request.flash('error', "First log in");
+        response.redirect("/login");
+    } else {
+        Lecture.findById(request.params.id).exec(function (error, foundGroup){
+            if(error){
+                request.flash('error', 'could not find the group');
+                response.redirect('/groups');
+            } else if (!foundGroup.owner.equals(request.user._id)) {
+                request.flash("error", "You don't own the group");
+                response.redirect("back");
+            } else {
+                next();
+            }
+        });
+    }
+};
+
 module.exports = authenticate;
