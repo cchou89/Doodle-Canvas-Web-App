@@ -40,11 +40,27 @@ router.get("/:id", function (request, response) {
 
 /*EDIT group*/
 /* INDEX:  GET Group listing. */
-router.get('/:id/edit', authenticate.GroupOwnership, function(request, response) {
+router.get('/:id/edit',function(request, response) {
 // find the list of all Groups
     Group.findById(request)
-        .then(function (error, list) {
-            response.render('groups/edit', {group: list});
+        .exec()
+        .then(function (error, foundGroup) {
+            return Promise.all(foundGroup)
+                .then(function (foundGroup) {
+                    User.findById(foundGroup.members)
+                        .exec()
+                        .then(function () {
+                            return Promise.all(members)
+                                .then(function (found) {
+                                    response.render('groups/edit', {group: foundGroup, members:found});
+                                })
+                                .catch(function (error) {
+                                    request.flash('error', "Could not find the Group");
+                                    response.redirect('/groups'
+                                    );
+                                });
+                        });
+                })
         })
         .catch(function (error) {
             request.flash('error', "Could not find the Group");
@@ -54,42 +70,49 @@ router.get('/:id/edit', authenticate.GroupOwnership, function(request, response)
 });
 
 // UPDATE: PUT the edit page
-router.put('/:id', authenticate.GroupOwnership, function (request, response) {
-    var memberList= request.body.member;
+router.put('/:id', function (request, response) {
+    var memberList = request.body.member;
     var list = [];
-    Lecture.findById(request.params.id)
-        .then( function (error, foundLecture) {
+    Group.findById(request.params.id)
+        .then(function (error, foundLecture) {
             /* this update is not safe but works for now
             *  @TODO can be improved by using findByIdAndUpdate, or Buffer.alloc() */
-            foundLecture.name = request.body.groupName;
             User.find({username: memberList})
                 .exec()
-                .then(function(result) {
+                .then(function (result) {
                     return Promise.all(result)
-                        .then(function addId(user) {
+                        .then(function findNewID(user) {
                             list = user.map(user => mongoose.Types.ObjectId(user._id.toString()));
                             console.log(list);
                             return list;
                         })
-                        .catch(function(error) {
-                            request.flash('error', "Could not create the group");
+                        .catch(function (error) {
+                            request.flash('error', "Could not update group");
                             //redirect back to index
                             response.redirect("/groups/new");
                         })
-                        .then(function(list){
-                            foundLecture.members = foundLecture.members + list;
+                        .then(function updateGroup(list) {
+                            foundLecture.update(
+                                {
+                                    name: request.body.groupName
+                                },
+                                {
+                                    $addToSet: {members: list}
+                                });
                             foundLecture.save();
+                        })
+                        .catch(function (error) {
+                            request.flash('error', "Could not update group");
+                            //redirect back to index
+                            response.redirect("/groups/new");
                         });
                 })
-        .then(function(list){
-
+                .catch(function (error) {
+                    request.flash('error', "Could not update group");
+                    //redirect back to index
+                    response.redirect("/groups/new");
+                });
         });
-
-
-
-        foundLecture.save();
-        response.redirect("/groups/" + request.params.id);
-    });
 });
 
 /* CREATE: POST Group form that creates a new Group */
