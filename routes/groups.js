@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var Group = require('../models/group');
 var User = require('../models/user');
+var mongoose = require('mongoose');
 var authenticate = require('../middleware/authenticate');
 var router = express.Router();
 
@@ -170,6 +171,33 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
             //redirect back to index
             response.redirect("/groups/new");
         });
+});
+
+/* SHOW: GET a group */
+router.get("/:id",  function (request, response) {
+    Group.findById(request.params.id).exec(function (error, foundGroup){
+        if(error){
+            console.log(error);
+            request.flash('error', 'could not find the group');
+            response.redirect('/groups');
+        } else {
+            response.render('groups/show', {group : foundGroup});
+        }
+    })
+});
+
+/* DESTROY: DELETE a group */
+router.delete("/:id", authenticate.groupOwnership ,  function (request, response) {
+    Group.findById(request.params.id,function () {
+        Group.findByIdAndDelete(request.params.id,function (error) {
+            if (error) {
+                request.flash('error', 'could not delete the group');
+                response.redirect("/groups");
+            } else {
+                response.redirect("/groups");
+            }
+        });
+    });
 });
 
 module.exports = router;
