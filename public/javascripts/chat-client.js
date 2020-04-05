@@ -2,7 +2,7 @@
 function extractURL() {
     var url = window.location.href;
     var paths = url.split('/');
-    var namespace = paths[paths.length-1];
+    var namespace = paths[paths.length-2];
     if(namespace === ""){
         namespace = '/';
     }
@@ -20,7 +20,7 @@ $(function () {
         return false;
     });
     socket.on(id, function(msg){
-        $('#message-list').append($('<li>').text(msg));
+        $('#message-list').prepend($('<li>').text(msg));
         // window.scrollTo(0, document.body.scrollHeight);
     });
 });

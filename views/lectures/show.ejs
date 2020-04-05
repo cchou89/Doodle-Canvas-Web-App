@@ -17,14 +17,8 @@
             </div>
             <% if(loggedinUser){ %>
                 <a class="btn btn-lg btn-success btn-block" href="/lectures/<%=lecture._id%>/live">Visit Live
-                    Lecture</a></br>
-                <p class="lead">Live Chat</p>
-                <ul id="message-list"></ul>
-                <form id ="message-form" action="#" method="get">
-                    <input id="message" autocomplete="off" />
-                    <button class="btn btn-md btn-default ">Send</button>
-                </form>
-            <% }%>
+                    Lecture</a>
+             <% }%>
         </div>
         <div class="col-md-10" id="drawingColumn">
             <div id="blackboardPlaceholder">
@@ -55,6 +49,6 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
 <script type="text/javascript" src="/javascripts/canvas.js"></script>
-<script type="text/javascript" src="/javascripts/chat-client.js"></script>
+
 
 <% include ../partials/footer %>
