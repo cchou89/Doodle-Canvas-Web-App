@@ -26,12 +26,11 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
 
 /* SHOW: GET a group */
 router.get("/:id", function (request, response) {
-    console.log(request.params.id);
     Group.findById(request.params.id).exec(function (error, foundGroup){
         if(error){
             console.log(error);
             request.flash('error', 'could not find the group');
-            response.redirect('/groups');
+            response.redirect('/groups/:id');
         } else {
             response.render('groups/show', {group : foundGroup});
         }
@@ -42,25 +41,23 @@ router.get("/:id", function (request, response) {
 /* INDEX:  GET Group listing. */
 router.get('/:id/edit',function(request, response) {
 // find the list of all Groups
-    Group.findById(request)
+    Group.findById(request.params.id)
         .exec()
-        .then(function (error, foundGroup) {
-            return Promise.all(foundGroup)
-                .then(function (foundGroup) {
-                    User.findById(foundGroup.members)
-                        .exec()
-                        .then(function () {
-                            return Promise.all(members)
-                                .then(function (found) {
-                                    response.render('groups/edit', {group: foundGroup, members:found});
-                                })
-                                .catch(function (error) {
-                                    request.flash('error', "Could not find the Group");
-                                    response.redirect('/groups'
-                                    );
-                                });
+        .then(function (foundGroup) {
+            var listMembers = foundGroup.members;
+            User.find({_id: listMembers})
+                .exec()
+                .then(function (result) {
+                    return Promise.all(result)
+                        .then(function (found) {
+                            return response.render('groups/edit', {group: foundGroup, members:found});
+                        })
+                        .catch(function (error) {
+                            request.flash('error', "Could not find the Group");
+                            response.redirect('/groups'
+                            );
                         });
-                })
+                });
         })
         .catch(function (error) {
             request.flash('error', "Could not find the Group");
