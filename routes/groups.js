@@ -106,7 +106,7 @@ router.put('/:id', function (request, response) {
                 .catch(function (error) {
                     request.flash('error', "Could not update group");
                     //redirect back to index
-                    response.redirect('/groups/' + foundLecture._id);
+                    response.redirect('/groups/' + foundLecture._id + '/edit');
                 });
         });
 });
@@ -147,6 +147,7 @@ router.post('/new', authenticate.isLoggedIn, function(request,response) {
                 })
         })
         .then(function fillSchema(list) {
+            list.push(mongoose.Types.ObjectId(owner));
             return {
                 _id: mongoose.Types.ObjectId(),
                 name: name,
