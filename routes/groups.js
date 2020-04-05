@@ -2,13 +2,12 @@ var express = require('express');
 var mongoose = require('mongoose');
 var Group = require('../models/group');
 var User = require('../models/user');
-var mongoose = require('mongoose');
 var authenticate = require('../middleware/authenticate');
 var router = express.Router();
 
 
 /* INDEX:  GET Group listing. */
-router.get('/', function(request, response) {
+router.get('/', authenticate.isLoggedIn, function(request, response) {
     // find the list of all Groups
     Group.find({$or: [{owner: request.user._id}, {members: {$in: request.user._id}}]})
         .then(function (list) {
