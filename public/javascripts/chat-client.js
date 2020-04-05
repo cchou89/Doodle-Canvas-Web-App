@@ -14,13 +14,13 @@ $(function () {
 
     var socket = io(); // io without an argument will auto discover
 
-    $('form').submit(function(){
-        socket.emit(id, $('#m').val());
-        $('#m').val('');
+    $('#message-form').submit(function(){
+        socket.emit(id, $('#message').val());
+        $('#message').val('');
         return false;
     });
     socket.on(id, function(msg){
-        $('#messages').append($('<li>').text(msg));
+        $('#message-list').append($('<li>').text(msg));
         // window.scrollTo(0, document.body.scrollHeight);
     });
 });
