@@ -1,7 +1,13 @@
 <% include ../partials/header %>
 
-<h1>This is the live page</h1>
-<h2>If you need to do page specific styling do it inside the ejs file</h2>
-<h2>Other scripts can be added to the end of the body before  <%% include ../partials/footer %></h2>
+<div id="drawingContainer">
+    <input type="button" value="Clear" onclick="clearit()"/>
+    <canvas id="drawing"></canvas>
+    <input type="file" id="fileUpload" name="fileUpload"/>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script type="text/javascript" src="/javascripts/draw-client.js"></script>
+
 
 <% include ../partials/footer %>
