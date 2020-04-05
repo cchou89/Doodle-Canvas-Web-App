@@ -1,10 +1,12 @@
 var express = require('express');
 var Group = require('../models/group');
+var User = require('../models/user');
+var mongoose = require('mongoose');
 var authenticate = require('../middleware/authenticate');
 var router = express.Router();
 
 
-// /* INDEX:  GET Group listing. */
+/* INDEX:  GET Group listing. */
 router.get('/', function(request, response) {
     // find the list of all Groups
     Group.find({}, function (error, list) {
@@ -24,21 +26,43 @@ router.get("/new", authenticate.isLoggedIn, function(request, response){
 
 /* CREATE: POST Group form that creates a new Group */
 router.post('/new', authenticate.isLoggedIn, function(request,response) {
-        var name = request.body.groupName;
-        var owner = request.user._id;
-        var members = [request.body.memberInput];
-        var newGroup = {name: name,
-                        owner:owner,
-                        members:members
-                        };
-        Group.create(newGroup, function (error) {
-            if(error){
-                request.flash('error', "Could not create the group");
-                response.redirect("/groups/new");
-            } else {
-                //redirect back to index
-                response.redirect("/groups");                }
+    var name = request.body.groupName;
+    var owner = request.user._id;
+    var memberList= request.body.member;
+    var list = [];
+
+    User.find({username: memberList})
+        .exec()
+        .then(function(result) {
+            return Promise.all(result)
+                .then(function addId(user) {
+                    list = user.map(user => mongoose.Types.ObjectId(user._id.toString()));
+                    return list;
+                })
         })
+        .then(function fillSchema(list) {
+            return {
+                _id: mongoose.Types.ObjectId(),
+                name: name,
+                owner: owner,
+                members: list
+            };
+        })
+        .then(function createGroup(newGroup){
+            //Create group
+            Group.create(newGroup, function(error){
+                if(error){
+                    throw error;
+                }else{
+                    response.redirect("/groups/" + newGroup._id);
+                }
+            });
+        })
+        .catch(function(error){
+            request.flash('error', "Could not create the group");
+            //redirect back to index
+            response.redirect("/groups/new");
+        });
 });
 
 /* SHOW: GET a group */
@@ -51,7 +75,7 @@ router.get("/:id",  function (request, response) {
         } else {
             response.render('groups/show', {group : foundGroup});
         }
-    })
+    });
 });
 
 /* DESTROY: DELETE a group */
@@ -69,3 +93,4 @@ router.delete("/:id", authenticate.groupOwnership ,  function (request, response
 });
 
 module.exports = router;
+

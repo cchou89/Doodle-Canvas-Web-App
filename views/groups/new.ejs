@@ -8,21 +8,27 @@
             </label>
         </div>
         <div class="form-group">
-            <label for="memberInput">
-                Add Members:
-                <input type="text" id="memberInput" placeholder="Member" onchange="search()">
-            </label>
-            <button type="button" onclick="addMember()" class="addBtn">
-                Add
-            </button>
-            <button type="button" onclick="deleteMember()" class="delBtn">
-                Delete
-            </button>
-            <div id="myList">
-                <select id="memberList" size="10">
-                    <!--Dynamically presents closest matches-->
-                </select>
-            </div>
+<!--            TODO:Possibly add method to make this dynamic-->
+            <h2>Add Members</h2>
+            <label for="member">
+                1:
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <label for="member">
+                2:
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <label for="member">
+                3:
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <label for="member">
+                4:
+                <input type="text" id="member1" name="member" placeholder="Member">
+            </label><br>
+            <ul id="memberList" name="memberList">
+                <!--                    lists preexisting members in group-->
+            </ul>
         </div>
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block">Submit!</button>
@@ -31,15 +37,16 @@
 </div>
 
 <script>
+    var User = require('../../models/user');
+
     function addMember(){
-        var memberToAdd = document.getElementById("memberInput");
-        if(memberToAdd.value !== ""){
-            var selectList = document.getElementById("memberList");
-            var option = document.createElement("option");
-            option.text = memberToAdd.value;
-            selectList.add(option);
-        }
+        var memberToAdd = document.getElementById("member1");
+        var newLine = document.createElement("LI");
+        var value = document.createTextNode(memberToAdd.value);
+        newLine.appendChild(value);
+        document.getElementById("memberList").appendChild(newLine);
     }
+
     function deleteMember(){
         var toDelete = document.getElementById("memberList");
         toDelete.remove(toDelete.selectedIndex);
@@ -47,6 +54,11 @@
 
     function search(){
         /*Searches for closest matches*/
+        var input = document.getElementById('memberInput')
+        if(input.value !== ""){
+            var searchTerm = input.value;
+            var query = User.find({name: searchTerm})
+        }
     }
 </script>
 <% include ../partials/footer %>
