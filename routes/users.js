@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 var Lecture = require('../models/lecture');
+var Drawing = require('../models/drawing');
+var Group = require('../models/group');
 var authenticate = require('../middleware/authenticate');
 
 /* GET users listing. */
@@ -62,7 +64,7 @@ router.put('/:id', authenticate.isLoggedIn, function (request, response) {
 // /* DESTROY: DELETE a user*/
 // /* @TODO only checks is the user is logged in, does not check ownership of the account */
 router.delete("/:id", authenticate.isLoggedIn, function (request, response) {
-  /* first destroy all lectures owned by the user */
+  /* first destroy all lectures authored by the user */
   Lecture.find({'author': request.params.id }, function (error, lectures) {
     if (error){
       request.flash('error', "Error searching for the user's lectures");
@@ -79,6 +81,41 @@ router.delete("/:id", authenticate.isLoggedIn, function (request, response) {
       });
     }
   });
+  /* second destroy all drawings authored by the user */
+  Drawing.find({'author': request.params.id }, function (error, drawings) {
+    if (error){
+      request.flash('error', "Error searching for the user's drawings");
+      response.redirect('/');
+    } else {
+      drawings.forEach(function(drawing){
+        Drawing.findByIdAndDelete(drawing._id, function (error) {
+          if (error) {
+            console.log('could not delete all drawings');
+            request.flash('error', 'could not delete all drawings of the user');
+            response.redirect("/users/" + request.params.id);
+          }
+        });
+      });
+    }
+  });
+  /* third destroy all groups owned by the user */
+  Group.find({'owner': request.params.id }, function (error, groups) {
+    if (error){
+      request.flash('error', "Error searching for the user's groups");
+      response.redirect('/');
+    } else {
+      groups.forEach(function(group){
+        Group.findByIdAndDelete(group._id, function (error) {
+          if (error) {
+            console.log('could not delete all groups');
+            request.flash('error', 'could not delete all groups of the user');
+            response.redirect("/users/" + request.params.id);
+          }
+        });
+      });
+    }
+  });
+
     /* then delete the user */
   User.findByIdAndDelete(request.params.id, function (error) {
       if (error) {
