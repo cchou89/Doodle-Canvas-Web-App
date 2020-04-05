@@ -1,6 +1,6 @@
 var Lecture = require("../models/lecture");
 var Group = require("../models/group");
-// var User = require("../models/user");
+var User = require("../models/user");
 
 var authenticate = {};
 
@@ -31,6 +31,25 @@ authenticate.lectureOwnership = function(request, response, next) {
         });
     }
 };
+authenticate.userOwnership = function(request, response, next){
+    if(!request.isAuthenticated()){
+        request.flash('error', "First log in");
+        response.redirect("/login");
+    } else {
+        User.findById(request.params.id).exec(function (error, foundUser){
+            if(error){
+                request.flash('error', 'could not find the user');
+                response.redirect('/users');
+            } else if (!foundUser._id.equals(request.user._id)) {
+                request.flash("error", "You are not the owner of the account");
+                response.redirect("back");
+            } else {
+                next();
+            }
+        });
+    }
+};
+
 authenticate.groupOwnership = function(request, response, next) {
     if(!request.isAuthenticated()){
         request.flash('error', "First log in");
