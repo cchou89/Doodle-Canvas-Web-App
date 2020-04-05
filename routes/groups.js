@@ -72,13 +72,12 @@ router.put('/:id', function (request, response) {
     var list = [];
     Group.findById(request.params.id)
         .then(function (foundLecture) {
-            console.log('start');
+
             /* this update is not safe but works for now
             *  @TODO can be improved by using findByIdAndUpdate, or Buffer.alloc() */
             User.find({username: memberList})
                 .exec()
                 .then(function (result) {
-                    console.log('step2');
                     return Promise.all(result)
                         .then(function findNewID(user) {
                             list = user.map(user => mongoose.Types.ObjectId(user._id.toString()));
@@ -91,15 +90,19 @@ router.put('/:id', function (request, response) {
                     response.redirect('/groups/' + foundLecture._id);
                 })
                 .then(function updateGroup(list) {
-                    foundLecture.name = request.body.groupName;
-                    foundLecture.update(
-                        {$addToSet: {
-                            members: list
-                        }}
-                );
-                console.log(foundLecture);
-                foundLecture.save();
-                response.redirect("/groups/" + newGroup._id);
+                    return Promise.all(list)
+                        .then(function (member) {
+                            foundGroupMembers =foundLecture.members;
+                            foundGroupMembers.push(member);
+                            var unique = Array.from(new Set(foundGroupMembers));
+                            foundGroupMembers = unique;
+                            foundLecture.name = request.body.groupName;
+                            console.log(foundGroupMembers);
+                            foundLecture.save();
+                        });
+                })
+                .then(function(){
+                    response.redirect("/groups/" + foundLecture._id);
                 })
                 .catch(function (error) {
                     request.flash('error', "Could not update group");
