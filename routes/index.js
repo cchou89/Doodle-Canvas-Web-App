@@ -18,7 +18,7 @@ router.post("/register", function(request, response){
   User.register(newUser, request.body.password, function(err, user){
     if(err){
       request.flash("error", err.message);
-      return response.render("register");
+      return response.redirect("/register");
     }
     passport.authenticate("local")(request, response, function(){
       request.flash('message', 'Welcome to Skynet '+ user.username);

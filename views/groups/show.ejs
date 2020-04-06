@@ -6,7 +6,7 @@
             <p class="lead"><%= group.name%></p>
             <div class="list-group">
                 <table>
-                    <th scope="col">Name</th>
+                    <th scope="col">Members:</th>
                     <tbody>
                     <% members.forEach((member) => { %>
                         <tr>
@@ -17,21 +17,16 @@
                     </tbody>
                 </table>
                 <% if(loggedinUser && group.owner.equals(loggedinUser._id)){ %>
-                    <a class="btn btn-xs btn-warning" href="/groups/<%= group._id %>/edit">Edit</a>
+                    <a class="btn btn-lg btn-warning btn-block" href="/groups/<%= group._id %>/edit">Edit</a>
+                    <p></p>
                     <form id="delete-form" action="/groups/<%= group._id %>?_method=DELETE" method="POST">
-                        <button class="btn btn-xs btn-danger">Delete</button>
+                        <button class="btn btn-lg btn-danger btn-block ">Delete</button>
                     </form>
                 <% }%>
             </div>
             <% if(loggedinUser){ %>
             <a class="btn btn-lg btn-success btn-block" href="/groups/<%=group._id%>/live">Visit Live
-                Lecture</a></br>
-            <p class="lead">Live Chat</p>
-            <ul id="message-list"></ul>
-            <form id ="message-form" action="#" method="get">
-                <input id="message" autocomplete="off" />
-                <button class="btn btn-md btn-default ">Send</button>
-            </form>
+                Chat</a></br>
             <% }%>
         </div>
         <div class="col-md-10">
