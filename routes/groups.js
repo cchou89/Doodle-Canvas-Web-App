@@ -47,6 +47,18 @@ router.get("/:id", function (request, response) {
             response.redirect('/groups/:id');
         });
 });
+router.get('/:id/live', authenticate.isLoggedIn, function (request, response) {
+    Group.findById(request.params.id).exec(function (error, foundGroup){
+        if(error){
+            request.flash('error', 'could not find the group');
+            response.redirect('/groups');
+        } else {
+            // passed the group just in case needed
+            response.render('groups/live', {group : foundGroup});
+        }
+    })
+});
+
 
 /*EDIT group*/
 /* INDEX:  GET Group listing. */
