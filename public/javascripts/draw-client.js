@@ -12,29 +12,11 @@ document.addEventListener("DOMContentLoaded", function() {
     var canvas  = document.getElementById('drawing');
     var context = canvas.getContext('2d');
     var canvasContainer = document.getElementById('drawingContainer');
-    // var width   = window.innerWidth;
-    // var height  = window.innerHeight;
     var width   = canvasContainer.clientWidth * .95;
     var height  = canvasContainer.clientHeight *.95;
 
-    // set canvas to full browser width/height
-    // canvas.width = width - 5;
-    // canvas.height = height - 50;
     canvas.width = width;
     canvas.height = height;
-
-    // register mouse event handlers
-    canvas.onmousedown = function(e){ mouse.click = true; };
-    canvas.onmouseup = function(e){ mouse.click = false; };
-
-    canvas.onmousemove = function(e) {
-        // normalize mouse position to range 0.0 - 1.0
-        // mouse.pos.x = e.clientX / width;
-        // mouse.pos.y = e.clientY / height;
-        mouse.pos.x = e.clientX / canvas.width;
-        mouse.pos.y = e.clientY / canvas.height;
-        mouse.move = true;
-    };
 
     function findPos(obj){
 
@@ -55,6 +37,23 @@ document.addEventListener("DOMContentLoaded", function() {
     var canvasWidth=canvas.width;
     var canvasHeight=canvas.height;
     var isDragging=false;
+
+    // register mouse event handlers
+    canvas.onmousedown = function(e){ mouse.click = true; };
+    canvas.onmouseup = function(e){ mouse.click = false; };
+
+    canvas.onmousemove = function(e) {
+        // normalize mouse position to range 0.0 - 1.0
+        console.log(e.clientX);
+        console.log(e.clientY);
+        mouse.pos.x = e.clientX / canvasWidth;
+        mouse.pos.y = (e.clientY - offsetY) / canvasHeight;
+        console.log(mouse.pos.x);
+        console.log(mouse.pos.y);
+        mouse.move = true;
+    };
+
+
     var id = extractLiveURL();
     var lecture_draw_line = id+ "draw_line";
     var lecture_clear = id + "clear";
@@ -64,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
     drawNamespace.on(lecture_draw_line, function (data) {
         console.log(lecture_draw_line);
         var line = data.line;
-        context.beginPath();
+        // context.beginPath();
         context.moveTo(line[0].x * width, line[0].y * height);
         context.lineTo(line[1].x * width, line[1].y * height);
         context.stroke();
@@ -80,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // main loop, running every 25ms
     function mainLoop() {
         // check if the user is drawing
-        if (mouse.click && mouse.move && mouse.pos_prev && isDragging) {
+        if (mouse.click && mouse.move && mouse.pos_prev) {
             // send line to to the server
             drawNamespace.emit(lecture_draw_line, {line: [mouse.pos, mouse.pos_prev]});
             mouse.move = false;
