@@ -11,12 +11,17 @@ document.addEventListener("DOMContentLoaded", function() {
     // get canvas element and create context
     var canvas  = document.getElementById('drawing');
     var context = canvas.getContext('2d');
-    var width   = window.innerWidth;
-    var height  = window.innerHeight;
+    var canvasContainer = document.getElementById('drawingContainer');
+    // var width   = window.innerWidth;
+    // var height  = window.innerHeight;
+    var width   = canvasContainer.clientWidth * .95;
+    var height  = canvasContainer.clientHeight *.95;
 
     // set canvas to full browser width/height
-    canvas.width = width - 5;
-    canvas.height = height - 50;
+    // canvas.width = width - 5;
+    // canvas.height = height - 50;
+    canvas.width = width;
+    canvas.height = height;
 
     // register mouse event handlers
     canvas.onmousedown = function(e){ mouse.click = true; };
@@ -24,8 +29,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     canvas.onmousemove = function(e) {
         // normalize mouse position to range 0.0 - 1.0
-        mouse.pos.x = e.clientX / width;
-        mouse.pos.y = e.clientY / height;
+        // mouse.pos.x = e.clientX / width;
+        // mouse.pos.y = e.clientY / height;
+        mouse.pos.x = e.clientX / canvas.width;
+        mouse.pos.y = e.clientY / canvas.height;
         mouse.move = true;
     };
 
@@ -42,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     var canvasOffset = findPos(canvas);
+    console.log(canvasOffset);
     var offsetX=canvasOffset[0];
     var offsetY=canvasOffset[1];
     var canvasWidth=canvas.width;
@@ -72,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // main loop, running every 25ms
     function mainLoop() {
         // check if the user is drawing
-        if (mouse.click && mouse.move && mouse.pos_prev) {
+        if (mouse.click && mouse.move && mouse.pos_prev && isDragging) {
             // send line to to the server
             drawNamespace.emit(lecture_draw_line, {line: [mouse.pos, mouse.pos_prev]});
             mouse.move = false;
